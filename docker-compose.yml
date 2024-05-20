@@ -29,19 +29,19 @@ services:
     networks:                                                   # Подключаем к сети
       - go_blog_network
     
-  # pgadmin:
-  #   container_name: pgadmin_container                           # Название контейнера
-  #   image: dpage/pgadmin4                                       # Название:версия образа
-  #   environment:                                                # Берем из .env
-  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-  #   depends_on:
-  #     - go_blog-postgres
-  #   ports:                                                      # Связываем порты хоста:контейнера
-  #     - "5050:80"
-  #   networks:                                                   # Подключаем к сети
-  #     - go_blog_network
-  #   restart: unless-stopped
+  pgadmin:
+    container_name: pgadmin_container                           # Название контейнера
+    image: dpage/pgadmin4                                       # Название:версия образа
+    environment:                                                # Берем из .env
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    depends_on:
+      - go_blog-postgres
+    ports:                                                      # Связываем порты хоста:контейнера
+      - "5050:80"
+    networks:                                                   # Подключаем к сети
+      - go_blog_network
+    restart: unless-stopped
 
 # Список томов
 volumes:
