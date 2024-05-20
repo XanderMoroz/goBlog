@@ -8,6 +8,13 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 
+	// "github.com/google/uuid"
+
+	"github.com/XanderMoroz/goBlog/database"
+	"github.com/XanderMoroz/goBlog/internal/handlers"
+
+	// "github.com/XanderMoroz/goBlog/internal/models"
+
 	"github.com/gofiber/swagger"
 
 	_ "github.com/XanderMoroz/goBlog/docs"
@@ -30,11 +37,22 @@ import (
 func main() {
 
 	// Start a new fiber app
+	log.Println("Инициализируем приложение Fiber")
 	app := fiber.New()
 
 	// Middleware
 	app.Use(recover.New())
 	app.Use(cors.New())
+
+	log.Println("Подключаюсь к базе данных")
+	database.Connect()
+
+	// handlers.CreateUserInDB()
+	// handlers.GetUsersFromDB()
+	// handlers.GetUserByIdFromDB()
+	// handlers.GetUserByNameFromDB()
+	// handlers.UpdateUserByIdFromDB()
+	// handlers.DeleteUserByIdFromDB()
 
 	app.Get("/swagger/*", swagger.HandlerDefault) // default
 	app.Get("/", func(c *fiber.Ctx) error {
@@ -46,6 +64,11 @@ func main() {
 	app.Get("/article/:id", getArticleByID)
 	app.Post("/article", createArticle)
 	app.Delete("/article/:id", deleteArticle)
+
+	app.Get("/users", handlers.GetAllUsers)
+	app.Post("/users", handlers.AddNewUser)
+	app.Get("/users/:id", handlers.GetUserById)
+	app.Delete("/users/:id", handlers.DeleteUserById)
 
 	// Start Server and Listen on PORT 3000
 	if err := app.Listen(":3000"); err != nil {

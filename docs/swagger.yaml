@@ -11,6 +11,60 @@ definitions:
       message:
         type: string
     type: object
+  models.CreateUserRequest:
+    description: Тело запроса для создания пользователя
+    properties:
+      LastName:
+        type: string
+      age:
+        type: integer
+      country:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      role:
+        type: string
+    required:
+    - LastName
+    - age
+    - country
+    - email
+    - firstName
+    - role
+    type: object
+  models.UserResponse:
+    description: Тело запроса для создания пользователя
+    properties:
+      age:
+        type: integer
+      country:
+        type: string
+      createdAt:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      id:
+        type: string
+      lastName:
+        type: string
+      role:
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - age
+    - country
+    - createdAt
+    - email
+    - firstName
+    - lastName
+    - role
+    - updatedAt
+    type: object
 host: 127.0.0.1:3000
 info:
   contact:
@@ -126,4 +180,98 @@ paths:
       summary: Show the status of server.
       tags:
       - root
+  /users:
+    get:
+      description: Get all users from db
+      operationId: get-all-users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.UserResponse'
+            type: array
+      summary: get all users
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: Creating User in DB with given request body
+      parameters:
+      - description: Request of Creating User Object
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: create new user
+      tags:
+      - Users
+  /users/{id}:
+    delete:
+      description: Delete a user item by ID
+      operationId: delete-user-by-id
+      parameters:
+      - description: userUUID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            items:
+              type: string
+            type: array
+      summary: delete a user item by ID
+      tags:
+      - Users
+    get:
+      description: Get a user item by ID
+      operationId: get-user-by-id
+      parameters:
+      - description: userUUID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+        "404":
+          description: Not Found
+          schema:
+            items:
+              type: string
+            type: array
+      summary: get a user item by ID
+      tags:
+      - Users
 swagger: "2.0"

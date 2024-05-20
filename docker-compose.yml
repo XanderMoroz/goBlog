@@ -7,48 +7,48 @@ services:
     ports:                                                      # Связываем порты хоста:контейнера
       - 3000:3000 
     restart: on-failure
-    # volumes:                                                    # Монтируем том с приложением
-    #   - api:/usr/src/app/
-    # depends_on:
-    #   - go_blog-postgres
-    # networks:                                                   # Подключаем к сети
-    #   - go_blog_network
+    volumes:                                                    # Монтируем том с приложением
+      - api:/usr/src/app/
+    depends_on:
+      - go_blog-postgres
+    networks:                                                   # Подключаем к сети
+      - go_blog_network
 
-#   go_blog-postgres:
-#     container_name: go_blog_postgres                            # Название контейнера
-#     image: postgres:15                                          # Название:версия образа
-#     environment:                                                # Берем из .env
-#       - POSTGRES_USER=${DB_USER}  
-#       - POSTGRES_PASSWORD=${DB_PASSWORD}
-#       - POSTGRES_DB=${DB_NAME}
-#       - DATABASE_HOST=${DB_HOST} 
-#     ports:                                                      # Связываем порты хоста:контейнера
-#       - '5432:5432'
-#     volumes:                                                    # Монтируем том с данными из БД
-#       - database_postgres:/var/lib/postgresql/data
-#     networks:                                                   # Подключаем к сети
-#       - go_blog_network
+  go_blog-postgres:
+    container_name: go_blog_postgres                            # Название контейнера
+    image: postgres:15                                          # Название:версия образа
+    environment:                                                # Берем из .env
+      - POSTGRES_USER=${DB_USER}  
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - DATABASE_HOST=${DB_HOST} 
+    ports:                                                      # Связываем порты хоста:контейнера
+      - '5432:5432'
+    volumes:                                                    # Монтируем том с данными из БД
+      - database_postgres:/var/lib/postgresql/data
+    networks:                                                   # Подключаем к сети
+      - go_blog_network
     
-#   pgadmin:
-#     container_name: pgadmin_container                           # Название контейнера
-#     image: dpage/pgadmin4                                       # Название:версия образа
-#     environment:                                                # Берем из .env
-#       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-#       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-#     depends_on:
-#       - go_blog-postgres
-#     ports:                                                      # Связываем порты хоста:контейнера
-#       - "5050:80"
-#     networks:                                                   # Подключаем к сети
-#       - go_blog_network
-#     restart: unless-stopped
+  # pgadmin:
+  #   container_name: pgadmin_container                           # Название контейнера
+  #   image: dpage/pgadmin4                                       # Название:версия образа
+  #   environment:                                                # Берем из .env
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+  #   depends_on:
+  #     - go_blog-postgres
+  #   ports:                                                      # Связываем порты хоста:контейнера
+  #     - "5050:80"
+  #   networks:                                                   # Подключаем к сети
+  #     - go_blog_network
+  #   restart: unless-stopped
 
-# # Список томов
-# volumes:
-#   api:
-#   database_postgres:               
+# Список томов
+volumes:
+  api:
+  database_postgres:               
 
 # # Настройки сети (чтоб контейнеры могли обмениваться данными)
-# networks:
-#   go_blog_network:
-#     driver: bridge
+networks:
+  go_blog_network:
+    driver: bridge
