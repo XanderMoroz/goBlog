@@ -13,8 +13,6 @@ import (
 	"github.com/XanderMoroz/goBlog/database"
 	"github.com/XanderMoroz/goBlog/internal/handlers"
 
-	// "github.com/XanderMoroz/goBlog/internal/models"
-
 	"github.com/gofiber/swagger"
 
 	_ "github.com/XanderMoroz/goBlog/docs"
@@ -38,7 +36,12 @@ func main() {
 
 	// Start a new fiber app
 	log.Println("Инициализируем приложение Fiber")
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		ServerHeader:  "Good News on Go",
+		AppName:       "Good News on Go v0.0.1",
+		CaseSensitive: true,
+		StrictRouting: false,
+	})
 
 	// Middleware
 	app.Use(recover.New())

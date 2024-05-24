@@ -1,18 +1,18 @@
 version: '3'
 
 services:
-  app:
-    container_name: go_blog_app                                 # Название контейнера
-    build: .                                                    # Образ контейнера берем из текущей папки
-    ports:                                                      # Связываем порты хоста:контейнера
-      - 3000:3000 
-    restart: on-failure
-    volumes:                                                    # Монтируем том с приложением
-      - api:/usr/src/app/
-    depends_on:
-      - go_blog-postgres
-    networks:                                                   # Подключаем к сети
-      - go_blog_network
+  # app:
+  #   container_name: go_blog_app                                 # Название контейнера
+  #   build: .                                                    # Образ контейнера берем из текущей папки
+  #   ports:                                                      # Связываем порты хоста:контейнера
+  #     - 3000:3000 
+  #   restart: on-failure
+  #   volumes:                                                    # Монтируем том с приложением
+  #     - api:/usr/src/app/
+  #   depends_on:
+  #     - go_blog-postgres
+  #   networks:                                                   # Подключаем к сети
+  #     - go_blog_network
 
   go_blog-postgres:
     container_name: go_blog_postgres                            # Название контейнера
@@ -26,29 +26,29 @@ services:
       - '5432:5432'
     volumes:                                                    # Монтируем том с данными из БД
       - database_postgres:/var/lib/postgresql/data
-    networks:                                                   # Подключаем к сети
-      - go_blog_network
+    # networks:                                                   # Подключаем к сети
+    #   - go_blog_network
     
-  pgadmin:
-    container_name: pgadmin_container                           # Название контейнера
-    image: dpage/pgadmin4                                       # Название:версия образа
-    environment:                                                # Берем из .env
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-    depends_on:
-      - go_blog-postgres
-    ports:                                                      # Связываем порты хоста:контейнера
-      - "5050:80"
-    networks:                                                   # Подключаем к сети
-      - go_blog_network
-    restart: unless-stopped
+  # pgadmin:
+  #   container_name: pgadmin_container                           # Название контейнера
+  #   image: dpage/pgadmin4                                       # Название:версия образа
+  #   environment:                                                # Берем из .env
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+  #   depends_on:
+  #     - go_blog-postgres
+  #   ports:                                                      # Связываем порты хоста:контейнера
+  #     - "5050:80"
+  #   networks:                                                   # Подключаем к сети
+  #     - go_blog_network
+  #   restart: unless-stopped
 
 # Список томов
 volumes:
-  api:
+  # api:
   database_postgres:               
 
 # # Настройки сети (чтоб контейнеры могли обмениваться данными)
-networks:
-  go_blog_network:
-    driver: bridge
+# networks:
+  # go_blog_network:
+    # driver: bridge
