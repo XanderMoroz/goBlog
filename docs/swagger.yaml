@@ -34,6 +34,16 @@ definitions:
     - firstName
     - role
     type: object
+  models.UpdateUserBody:
+    description: Тело запроса для обновления пользователя
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+    type: object
   models.UserResponse:
     description: Тело запроса для создания пользователя
     properties:
@@ -201,7 +211,7 @@ paths:
       - application/json
       description: Creating User in DB with given request body
       parameters:
-      - description: Request of Creating User Object
+      - description: Введите данные пользователя
         in: body
         name: request
         required: true
@@ -250,7 +260,7 @@ paths:
       tags:
       - Users
     get:
-      description: Get a user item by ID
+      description: Get a user by ID
       operationId: get-user-by-id
       parameters:
       - description: userUUID
@@ -271,7 +281,40 @@ paths:
             items:
               type: string
             type: array
-      summary: get a user item by ID
+      summary: get a user by ID
+      tags:
+      - Users
+    put:
+      description: Update user by ID
+      operationId: delete-user-by-id
+      parameters:
+      - description: userUUID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Введите данные пользователя
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateUserBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            items:
+              type: string
+            type: array
+      summary: update user by ID
       tags:
       - Users
 swagger: "2.0"

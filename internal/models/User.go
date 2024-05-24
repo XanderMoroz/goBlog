@@ -46,11 +46,12 @@ type UserResponse struct {
 	UpdatedAt time.Time `json:"updatedAt" validate:"required"`
 }
 
+// CreateUserRequest
+// @Description Тело запроса для обновления пользователя
 type UpdateUserBody struct {
-	FirstName string `json:"firstName" validate:"required"`
-	LastName  string `json:"LastName" validate:"required"`
-	Email     string `json:"email" validate:"required"`
-	Country   string `json:"country" validate:"required"`
-	Role      string `json:"role" validate:"required"`
-	Age       int    `json:"age" validate:"required"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Email     string `json:"email"`
+	// Role      string `json:"role"`
+	// Age       int    `json:"age"`
 }

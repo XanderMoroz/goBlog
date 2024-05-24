@@ -16,18 +16,23 @@ import (
 // @Tags           Users
 // @Accept         json
 // @Produce        json
-// @Param          request            body        models.CreateUserRequest    true    "Request of Creating User Object"
-// @Success        201                {string}    string
-// @Failure        400                {string}    string    "Bad Request"
-// @Router         /users [post]
+// @Param          request         	body        models.CreateUserRequest    true    "Введите данные пользователя"
+// @Success        201              {string}    string
+// @Failure        400              {string}    string    "Bad Request"
+// @Router         /users 			[post]
 func AddNewUser(c *fiber.Ctx) error {
 	db := database.DB
 	user := new(models.User)
 
-	// Store the body in the note and return error if encountered
+	// Извлекаем тело запроса
 	err := c.BodyParser(user)
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Review your input", "data": err})
+		// Обрабатываем ошибку
+		return c.Status(500).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Проверьте данные",
+			"data":    err,
+		})
 	}
 	log.Println("Запрос успешно обработан обработан")
 
@@ -92,15 +97,15 @@ func GetAllUsers(c *fiber.Ctx) error {
 	})
 }
 
-// @Summary		get a user item by ID
-// @Description Get a user item by ID
+// @Summary		get a user by ID
+// @Description Get a user by ID
 // @Tags 		Users
 // @ID			get-user-by-id
 // @Produce		json
 // @Param		id	path		string	true	"userUUID"
 // @Success		200	{object}	models.UserResponse
 // @Failure		404	{object}	[]string
-// @Router		/users/{id} [get]
+// @Router		/users/{id} 	[get]
 func GetUserById(c *fiber.Ctx) error {
 
 	db := database.DB
@@ -118,7 +123,7 @@ func GetUserById(c *fiber.Ctx) error {
 
 	// If no such note present return an error
 	if user.ID == uuid.Nil {
-		return c.Status(404).JSON(fiber.Map{"status": "error", "message": "No note present", "data": nil})
+		return c.Status(404).JSON(fiber.Map{"status": "error", "message": "User not found", "data": nil})
 	}
 
 	log.Println("Пользователей — успешно извлечен:")
@@ -132,6 +137,77 @@ func GetUserById(c *fiber.Ctx) error {
 		"status":  "success",
 		"message": "User Found",
 		"data":    user,
+	})
+}
+
+// @Summary			update user by ID
+// @Description 	Update user by ID
+// @ID				delete-user-by-id
+// @Tags 			Users
+// @Produce			json
+// @Param			id		path		string	true	"userUUID"
+// @Param          request         	body        models.UpdateUserBody    true    "Введите данные пользователя"
+// @Success			200	{object}	[]string
+// @Failure			404	{object}	[]string
+// @Router			/users/{id} [put]
+func UpdateUserById(c *fiber.Ctx) error {
+
+	db := database.DB
+	body := new(models.UpdateUserBody)
+	var user models.User
+
+	// Read the param userUUID
+	id := c.Params("id")
+
+	// Retrieve the record you want to update
+	result := db.First(&user, "ID = ?", id)
+
+	if result.Error != nil {
+		panic("failed to retrieve user: " + result.Error.Error())
+	}
+
+	// If no such note present return an error
+	if user.ID == uuid.Nil {
+		return c.Status(404).JSON(fiber.Map{"status": "error", "message": "User not found", "data": nil})
+	}
+
+	log.Println(id)
+
+	// Извлекаем тело запроса
+	err := c.BodyParser(body)
+	if err != nil {
+		// Обрабатываем ошибку
+		return c.Status(500).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Проверьте данные",
+			"data":    err,
+		})
+	}
+	log.Println("Тело запроса извлечено:")
+	log.Printf("	Новое Имя: <%s>\n", body.FirstName)
+	log.Printf("	Новая Фамилия: <%s>\n", body.LastName)
+	log.Printf("	Новый E-mail: <%s>\n", body.Email)
+
+	user.FirstName = body.FirstName
+	user.LastName = body.LastName
+	user.Email = body.Email
+
+	// Save the changes back to the database
+	result = db.Save(&user)
+	if result.Error != nil {
+		panic("failed to update user: " + result.Error.Error())
+	}
+
+	log.Println("Пользователь — успешно обновлен:")
+	log.Printf("	ID: <%s>\n", user.ID)
+	log.Printf("	Имя: <%s>\n", user.FirstName)
+	log.Printf("	Фамилия: <%s>\n", user.LastName)
+	log.Printf("	E-mail: <%s>\n", user.Email)
+
+	// Return success message
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "User Updated",
 	})
 }
 
@@ -181,91 +257,91 @@ func DeleteUserById(c *fiber.Ctx) error {
 	})
 }
 
-func CreateUserInDB() {
+// func CreateUserInDB() {
 
-	db := database.DB
-	newUser := models.User{
-		FirstName: "Jane",
-		LastName:  "Doe",
-		Email:     "jane111doe@gmail.com",
-		Country:   "Spain",
-		Role:      "Chef",
-		Age:       30,
-	}
+// 	db := database.DB
+// 	newUser := models.User{
+// 		FirstName: "Jane",
+// 		LastName:  "Doe",
+// 		Email:     "jane111doe@gmail.com",
+// 		Country:   "Spain",
+// 		Role:      "Chef",
+// 		Age:       30,
+// 	}
 
-	// Add a uuid to a new user record...
-	newUser.ID = uuid.New()
-	// ... Create a new user record...
-	result := db.Create(&newUser)
-	if result.Error != nil {
-		panic("failed to create user: " + result.Error.Error())
-	}
-	// ... Handle successful creation ...
-	log.Println("Новый пользователь — успешно создан:")
-	log.Printf("	ID: <%s>\n", newUser.ID)
-	log.Printf("	Имя: <%s>\n", newUser.FirstName)
-}
+// 	// Add a uuid to a new user record...
+// 	newUser.ID = uuid.New()
+// 	// ... Create a new user record...
+// 	result := db.Create(&newUser)
+// 	if result.Error != nil {
+// 		panic("failed to create user: " + result.Error.Error())
+// 	}
+// 	// ... Handle successful creation ...
+// 	log.Println("Новый пользователь — успешно создан:")
+// 	log.Printf("	ID: <%s>\n", newUser.ID)
+// 	log.Printf("	Имя: <%s>\n", newUser.FirstName)
+// }
 
-func GetUsersFromDB() {
+// func GetUsersFromDB() {
 
-	db := database.DB
-	var users []models.User // users slice
+// 	db := database.DB
+// 	var users []models.User // users slice
 
-	result := db.Find(&users)
+// 	result := db.Find(&users)
 
-	if result.Error != nil {
-		// handle error
-		panic("failed to retrieve users: " + result.Error.Error())
-	}
+// 	if result.Error != nil {
+// 		// handle error
+// 		panic("failed to retrieve users: " + result.Error.Error())
+// 	}
 
-	log.Println("Список пользователей — успешно извлечен:")
-	for _, user := range users {
-		log.Printf("User ID: %s, Name: %s %s, Email: %s\n", user.ID, user.FirstName, user.LastName, user.Email)
-	}
+// 	log.Println("Список пользователей — успешно извлечен:")
+// 	for _, user := range users {
+// 		log.Printf("User ID: %s, Name: %s %s, Email: %s\n", user.ID, user.FirstName, user.LastName, user.Email)
+// 	}
 
-}
+// }
 
-func GetUserByIdFromDB() {
+// func GetUserByIdFromDB() {
 
-	db := database.DB
-	var users []models.User // users slice
+// 	db := database.DB
+// 	var users []models.User // users slice
 
-	result := db.Where("ID = ?", "073b515e-f9b6-45b2-aeb1-bbaa6de48286").Find(&users)
+// 	result := db.Where("ID = ?", "073b515e-f9b6-45b2-aeb1-bbaa6de48286").Find(&users)
 
-	if result.Error != nil {
-		panic("failed to retrieve user: " + result.Error.Error())
-	}
-	// iterate over the users slice and print the details of each user
-	log.Println("Пользователь — успешно извлечен:")
-	for _, user := range users {
-		log.Printf("	ID: <%s>\n", user.ID)
-		log.Printf("	Имя: <%s>\n", user.FirstName)
-		log.Printf("	Фамилия: <%s>\n", user.LastName)
-		log.Printf("	E-mail: <%s>\n", user.Email)
-	}
+// 	if result.Error != nil {
+// 		panic("failed to retrieve user: " + result.Error.Error())
+// 	}
+// 	// iterate over the users slice and print the details of each user
+// 	log.Println("Пользователь — успешно извлечен:")
+// 	for _, user := range users {
+// 		log.Printf("	ID: <%s>\n", user.ID)
+// 		log.Printf("	Имя: <%s>\n", user.FirstName)
+// 		log.Printf("	Фамилия: <%s>\n", user.LastName)
+// 		log.Printf("	E-mail: <%s>\n", user.Email)
+// 	}
 
-}
+// }
 
-func GetUserByNameFromDB() {
+// func GetUserByNameFromDB() {
 
-	db := database.DB
-	var users []models.User // users slice
+// 	db := database.DB
+// 	var users []models.User // users slice
 
-	result := db.Where("First_Name = ?", "Jane").Find(&users)
+// 	result := db.Where("First_Name = ?", "Jane").Find(&users)
 
-	if result.Error != nil {
-		panic("failed to retrieve user: " + result.Error.Error())
-	}
-	// iterate over the users slice and print the details of each user
-	log.Println("Пользователь — успешно извлечен:")
-	for _, user := range users {
-		log.Printf("	ID: <%s>\n", user.ID)
-		log.Printf("	Имя: <%s>\n", user.FirstName)
-		log.Printf("	Фамилия: <%s>\n", user.LastName)
-		log.Printf("	E-mail: <%s>\n", user.Email)
-	}
+// 	if result.Error != nil {
+// 		panic("failed to retrieve user: " + result.Error.Error())
+// 	}
+// 	// iterate over the users slice and print the details of each user
+// 	log.Println("Пользователь — успешно извлечен:")
+// 	for _, user := range users {
+// 		log.Printf("	ID: <%s>\n", user.ID)
+// 		log.Printf("	Имя: <%s>\n", user.FirstName)
+// 		log.Printf("	Фамилия: <%s>\n", user.LastName)
+// 		log.Printf("	E-mail: <%s>\n", user.Email)
+// 	}
 
-}
+// }
 
 func UpdateUserByIdFromDB() {
 
@@ -274,7 +350,7 @@ func UpdateUserByIdFromDB() {
 	var user models.User
 
 	// Retrieve the record you want to update
-	result := db.First(&user, "ID = ?", "ec3236c5-4543-4fbe-bce0-ece27dded172")
+	result := db.First(&user, "ID = ?", "4d9e7fdc-a1ff-49db-92da-dc44e7395f35")
 	if result.Error != nil {
 		panic("failed to retrieve user: " + result.Error.Error())
 	}

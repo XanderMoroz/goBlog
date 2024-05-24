@@ -212,7 +212,7 @@ const docTemplate = `{
                 "summary": "create new user",
                 "parameters": [
                     {
-                        "description": "Request of Creating User Object",
+                        "description": "Введите данные пользователя",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -239,14 +239,14 @@ const docTemplate = `{
         },
         "/users/{id}": {
             "get": {
-                "description": "Get a user item by ID",
+                "description": "Get a user by ID",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Users"
                 ],
-                "summary": "get a user item by ID",
+                "summary": "get a user by ID",
                 "operationId": "get-user-by-id",
                 "parameters": [
                     {
@@ -262,6 +262,55 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.UserResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update user by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "update user by ID",
+                "operationId": "delete-user-by-id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "userUUID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Введите данные пользователя",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateUserBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     },
                     "404": {
@@ -365,6 +414,21 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UpdateUserBody": {
+            "description": "Тело запроса для обновления пользователя",
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
                     "type": "string"
                 }
             }

@@ -59,7 +59,7 @@ func main() {
 
 	app.Get("/swagger/*", swagger.HandlerDefault) // default
 	app.Get("/", func(c *fiber.Ctx) error {
-		err := c.SendString("And the API is UP!")
+		err := c.SendString("And the API is UP! Go to:\nhttp://127.0.0.1:3000/swagger/index.html")
 		return err
 	})
 
@@ -71,6 +71,7 @@ func main() {
 	app.Get("/users", handlers.GetAllUsers)
 	app.Post("/users", handlers.AddNewUser)
 	app.Get("/users/:id", handlers.GetUserById)
+	app.Put("/users/:id", handlers.UpdateUserById)
 	app.Delete("/users/:id", handlers.DeleteUserById)
 
 	// Start Server and Listen on PORT 3000
