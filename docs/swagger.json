@@ -142,6 +142,46 @@
                 }
             }
         },
+        "/articles": {
+            "post": {
+                "description": "Creating Article in DB with given request body",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "create new article",
+                "parameters": [
+                    {
+                        "description": "Введите данные статьи",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateArticleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "description": "Get all users from db",
@@ -334,6 +374,22 @@
         }
     },
     "definitions": {
+        "models.CreateArticleRequest": {
+            "description": "Тело запроса для создания пользователя",
+            "type": "object",
+            "required": [
+                "content",
+                "title"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "models.CreateUserRequest": {
             "description": "Тело запроса для создания пользователя",
             "type": "object",

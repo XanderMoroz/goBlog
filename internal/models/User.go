@@ -44,7 +44,7 @@ type CreateUserRequest struct {
 }
 
 // CreateUserRequest
-// @Description Тело ответа после оздания пользователя
+// @Description Тело ответа после cоздания пользователя
 type UserResponse struct {
 	ID        string    `json:"id"`
 	Name      string    `json:"name" validate:"required"`

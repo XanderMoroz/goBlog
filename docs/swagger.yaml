@@ -1,4 +1,15 @@
 definitions:
+  models.CreateArticleRequest:
+    description: Тело запроса для создания пользователя
+    properties:
+      content:
+        type: string
+      title:
+        type: string
+    required:
+    - content
+    - title
+    type: object
   models.CreateUserRequest:
     description: Тело запроса для создания пользователя
     properties:
@@ -162,6 +173,32 @@ paths:
       summary: user registration
       tags:
       - Authentication
+  /articles:
+    post:
+      consumes:
+      - application/json
+      description: Creating Article in DB with given request body
+      parameters:
+      - description: Введите данные статьи
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateArticleRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: create new article
+      tags:
+      - Articles
   /users:
     get:
       description: Get all users from db
