@@ -79,7 +79,7 @@ info:
   title: Good News on Go
   version: "1.0"
 paths:
-  /current_user:
+  /api/v1/current_user:
     get:
       description: Get token from users cookee
       operationId: get-current-user
@@ -95,7 +95,7 @@ paths:
       summary: get current user
       tags:
       - Authentication
-  /login:
+  /api/v1/login:
     post:
       consumes:
       - application/json
@@ -121,7 +121,7 @@ paths:
       summary: user authentication
       tags:
       - Authentication
-  /register:
+  /api/v1/register:
     post:
       consumes:
       - application/json

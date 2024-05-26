@@ -8,7 +8,7 @@ import (
 
 // SetUpRoutes sets up all the routes for the application
 func SetupAuthRoutes(app *fiber.App) {
-	app.Post("/api/register", controllers.Register)
-	app.Post("/api/login", controllers.Login)
-	app.Get("/api/user", controllers.GetCurrentUser)
+	app.Post("/api/v1/register", controllers.Register)
+	app.Post("/api/v1/login", controllers.Login)
+	app.Get("/api/v1/current_user", controllers.GetCurrentUser)
 }

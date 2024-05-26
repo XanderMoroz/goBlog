@@ -24,7 +24,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/current_user": {
+        "/api/v1/current_user": {
             "get": {
                 "description": "Get token from users cookee",
                 "produces": [
@@ -48,7 +48,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/login": {
+        "/api/v1/login": {
             "post": {
                 "description": "Authenticate User in app with given request body",
                 "consumes": [
@@ -88,7 +88,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/register": {
+        "/api/v1/register": {
             "post": {
                 "description": "Register User in app with given request body",
                 "consumes": [

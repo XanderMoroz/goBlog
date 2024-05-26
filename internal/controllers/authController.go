@@ -42,7 +42,7 @@ func Some() {
 // @Param          request         	body        models.SignUpUserRequest    true    "Введите данные для регистрации"
 // @Success        201              {string}    map[string]string
 // @Failure        400              {string}    string    "Bad Request"
-// @Router         /register 			[post]
+// @Router         /api/v1/register 			[post]
 func Register(c *fiber.Ctx) error {
 
 	log.Println("Получен запрос на регистрацию пользователя")
@@ -110,7 +110,7 @@ func Register(c *fiber.Ctx) error {
 // @Param          request         	body        models.LoginRequest    true    "Введите данные для авторизации"
 // @Success        201              {string}    map[]
 // @Failure        400              {string}    string    "Bad Request"
-// @Router         /login 			[post]
+// @Router         /api/v1/login 			[post]
 func Login(c *fiber.Ctx) error {
 	log.Println("Получен запрос на аутентификацию пользователя")
 
@@ -191,7 +191,7 @@ func Login(c *fiber.Ctx) error {
 // @ID			get-current-user
 // @Produce		json
 // @Success		200		{object}	[]models.UserResponse
-// @Router		/current_user [get]
+// @Router		/api/v1/current_user [get]
 func GetCurrentUser(c *fiber.Ctx) error {
 	log.Println("Получен запрос на извлечение авторизованного пользователя")
 

@@ -7,11 +7,9 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 
-	// "github.com/google/uuid"
-
 	"github.com/XanderMoroz/goBlog/database"
+	"github.com/XanderMoroz/goBlog/internal/controllers"
 	"github.com/XanderMoroz/goBlog/internal/handlers"
-	"github.com/XanderMoroz/goBlog/internal/routes"
 
 	"github.com/gofiber/swagger"
 
@@ -59,11 +57,9 @@ func main() {
 	})
 
 	// Setup routes
-	routes.SetupAuthRoutes(app)
-
-	// app.Post("/register", controllers.Register)
-	// app.Post("/login", controllers.Login)
-	// app.Get("/current_user", controllers.GetCurrentUser)
+	app.Post("/api/v1/register", controllers.Register)
+	app.Post("/api/v1/login", controllers.Login)
+	app.Get("/api/v1/current_user", controllers.GetCurrentUser)
 
 	app.Get("/users", handlers.GetAllUsers)
 	app.Post("/users", handlers.AddNewUser)
