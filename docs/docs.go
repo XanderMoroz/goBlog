@@ -24,133 +24,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/article": {
-            "get": {
-                "description": "Get all items in the article list",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Articles"
-                ],
-                "summary": "get all items",
-                "operationId": "get-all-articles",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/main.article"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Add a new item to the article list",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Articles"
-                ],
-                "summary": "add a new item",
-                "operationId": "create-article",
-                "parameters": [
-                    {
-                        "description": "article data",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/main.article"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/main.article"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/main.message"
-                        }
-                    }
-                }
-            }
-        },
-        "/article/{id}": {
-            "get": {
-                "description": "Get a article item by ID",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Articles"
-                ],
-                "summary": "get a article item by ID",
-                "operationId": "get-article-by-id",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "article ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/main.article"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/main.message"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete a article item by ID",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Articles"
-                ],
-                "summary": "delete a article item by ID",
-                "operationId": "delete-article-by-id",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "article ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/main.article"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/main.message"
-                        }
-                    }
-                }
-            }
-        },
         "/current_user": {
             "get": {
                 "description": "Get token from users cookee",
@@ -158,7 +31,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "Authentication"
                 ],
                 "summary": "get current user",
                 "operationId": "get-current-user",
@@ -185,7 +58,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "Authentication"
                 ],
                 "summary": "user authentication",
                 "parameters": [
@@ -215,30 +88,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/nice": {
-            "get": {
-                "description": "get the status of server.",
-                "consumes": [
-                    "*/*"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "root"
-                ],
-                "summary": "Show the status of server.",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            }
-        },
         "/register": {
             "post": {
                 "description": "Register User in app with given request body",
@@ -249,7 +98,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "Authentication"
                 ],
                 "summary": "user registration",
                 "parameters": [
@@ -471,25 +320,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "main.article": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "task": {
-                    "type": "string"
-                }
-            }
-        },
-        "main.message": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
         "models.CreateUserRequest": {
             "description": "Тело запроса для создания пользователя",
             "type": "object",

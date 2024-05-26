@@ -36,7 +36,7 @@ func Some() {
 
 // @Summary        user registration
 // @Description    Register User in app with given request body
-// @Tags           Users
+// @Tags           Authentication
 // @Accept         json
 // @Produce        json
 // @Param          request         	body        models.SignUpUserRequest    true    "Введите данные для регистрации"
@@ -104,7 +104,7 @@ func Register(c *fiber.Ctx) error {
 
 // @Summary        user authentication
 // @Description    Authenticate User in app with given request body
-// @Tags           Users
+// @Tags           Authentication
 // @Accept         json
 // @Produce        json
 // @Param          request         	body        models.LoginRequest    true    "Введите данные для авторизации"
@@ -187,7 +187,7 @@ func Login(c *fiber.Ctx) error {
 
 // @Summary		get current user
 // @Description Get token from users cookee
-// @Tags 		Users
+// @Tags 		Authentication
 // @ID			get-current-user
 // @Produce		json
 // @Success		200		{object}	[]models.UserResponse

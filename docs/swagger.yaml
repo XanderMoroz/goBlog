@@ -1,16 +1,4 @@
 definitions:
-  main.article:
-    properties:
-      id:
-        type: string
-      task:
-        type: string
-    type: object
-  main.message:
-    properties:
-      message:
-        type: string
-    type: object
   models.CreateUserRequest:
     description: Тело запроса для создания пользователя
     properties:
@@ -91,91 +79,6 @@ info:
   title: Good News on Go
   version: "1.0"
 paths:
-  /article:
-    get:
-      description: Get all items in the article list
-      operationId: get-all-articles
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/main.article'
-      summary: get all items
-      tags:
-      - Articles
-    post:
-      description: Add a new item to the article list
-      operationId: create-article
-      parameters:
-      - description: article data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/main.article'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/main.article'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/main.message'
-      summary: add a new item
-      tags:
-      - Articles
-  /article/{id}:
-    delete:
-      description: Delete a article item by ID
-      operationId: delete-article-by-id
-      parameters:
-      - description: article ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/main.article'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/main.message'
-      summary: delete a article item by ID
-      tags:
-      - Articles
-    get:
-      description: Get a article item by ID
-      operationId: get-article-by-id
-      parameters:
-      - description: article ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/main.article'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/main.message'
-      summary: get a article item by ID
-      tags:
-      - Articles
   /current_user:
     get:
       description: Get token from users cookee
@@ -191,7 +94,7 @@ paths:
             type: array
       summary: get current user
       tags:
-      - Users
+      - Authentication
   /login:
     post:
       consumes:
@@ -217,23 +120,7 @@ paths:
             type: string
       summary: user authentication
       tags:
-      - Users
-  /nice:
-    get:
-      consumes:
-      - '*/*'
-      description: get the status of server.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Show the status of server.
-      tags:
-      - root
+      - Authentication
   /register:
     post:
       consumes:
@@ -259,7 +146,7 @@ paths:
             type: string
       summary: user registration
       tags:
-      - Users
+      - Authentication
   /users:
     get:
       description: Get all users from db
