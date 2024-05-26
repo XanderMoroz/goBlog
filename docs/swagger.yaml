@@ -25,6 +25,17 @@ definitions:
     - name
     - password
     type: object
+  models.LoginRequest:
+    description: Тело запроса для аутентификации пользователя
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
   models.SignUpUserRequest:
     description: Тело запроса для регистрации пользователя
     properties:
@@ -165,6 +176,32 @@ paths:
       summary: get a article item by ID
       tags:
       - Articles
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate User in app with given request body
+      parameters:
+      - description: Введите данные для авторизации
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: user authentication
+      tags:
+      - Users
   /nice:
     get:
       consumes:
@@ -185,7 +222,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Register User in DB with given request body
+      description: Register User in app with given request body
       parameters:
       - description: Введите данные для регистрации
         in: body

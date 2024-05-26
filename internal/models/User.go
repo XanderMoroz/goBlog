@@ -19,10 +19,9 @@ type User struct {
 	DeletedAt gorm.DeletedAt
 }
 
-// CreateUserRequest
-// @Description Тело запроса для создания пользователя
-type CreateUserRequest struct {
-	Name     string `json:"name" validate:"required"`
+// LoginRequest
+// @Description Тело запроса для аутентификации пользователя
+type LoginRequest struct {
 	Email    string `json:"email" validate:"required"`
 	Password string `json:"password" validate:"required"`
 }
@@ -30,6 +29,14 @@ type CreateUserRequest struct {
 // SignUpUserRequest
 // @Description Тело запроса для регистрации пользователя
 type SignUpUserRequest struct {
+	Name     string `json:"name" validate:"required"`
+	Email    string `json:"email" validate:"required"`
+	Password string `json:"password" validate:"required"`
+}
+
+// CreateUserRequest
+// @Description Тело запроса для создания пользователя
+type CreateUserRequest struct {
 	Name     string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"required"`
 	Password string `json:"password" validate:"required"`

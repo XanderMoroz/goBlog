@@ -12,7 +12,8 @@ import (
 	"github.com/XanderMoroz/goBlog/internal/models"
 )
 
-type DBEnvConfig struct {
+type AppEnvConfig struct {
+	AppSecret  string
 	Dbdriver   string
 	DbUser     string
 	DbPassword string
@@ -25,14 +26,16 @@ type DBEnvConfig struct {
 var DB *gorm.DB // (он будет осуществлять запросы)
 
 // Извлкает переменные окружения и складывает в DBEnvConfig
-func GetEnvConfig() *DBEnvConfig {
+func GetEnvConfig() *AppEnvConfig {
 
 	err := godotenv.Load("./.env")
 	if err != nil {
 		log.Fatalf("Не удалось извлечь .env")
 	}
 
-	return &DBEnvConfig{
+	return &AppEnvConfig{
+		AppSecret: os.Getenv("API_SECRET"),
+
 		Dbdriver:   os.Getenv("DB_DRIVER"),
 		DbUser:     os.Getenv("DB_USER"),
 		DbPassword: os.Getenv("DB_PASSWORD"),

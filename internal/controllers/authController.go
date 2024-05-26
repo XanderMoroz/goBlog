@@ -1,8 +1,11 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
+	"time"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -12,12 +15,12 @@ import (
 )
 
 // @Summary        user registration
-// @Description    Register User in DB with given request body
+// @Description    Register User in app with given request body
 // @Tags           Users
 // @Accept         json
 // @Produce        json
 // @Param          request         	body        models.SignUpUserRequest    true    "Введите данные для регистрации"
-// @Success        201              {string}    string
+// @Success        201              {string}    map[string]string
 // @Failure        400              {string}    string    "Bad Request"
 // @Router         /register 			[post]
 func Register(c *fiber.Ctx) error {
@@ -47,7 +50,7 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
-	// Hash password
+	// Хэшируем пароль
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Email), bcrypt.DefaultCost)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -73,8 +76,83 @@ func Register(c *fiber.Ctx) error {
 	log.Println("Новый пользователь — успешно создан:")
 	log.Printf("	ID: <%s>\n", user.ID)
 	log.Printf("	Имя: <%s>\n", user.Name)
+	log.Printf("	Email: <%+v>\n", user.Email)
 
-	return c.JSON(fiber.Map{
-		"message": "User registered successfully",
+	return c.JSON(fiber.Map{"status": "success", "message": "User registered successfully", "data": user})
+}
+
+// @Summary        user authentication
+// @Description    Authenticate User in app with given request body
+// @Tags           Users
+// @Accept         json
+// @Produce        json
+// @Param          request         	body        models.LoginRequest    true    "Введите данные для авторизации"
+// @Success        201              {string}    string
+// @Failure        400              {string}    string    "Bad Request"
+// @Router         /login 			[post]
+func Login(c *fiber.Ctx) error {
+	log.Println("Получен запрос на аутентификацию пользователя")
+
+	db := database.DB
+	log.Println("Received a Login request")
+
+	// Parse request body
+	body := new(models.LoginRequest)
+	if err := c.BodyParser(&body); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Failed to parse request body",
+		})
+	}
+
+	// Check if user exists
+	var user models.User
+	var defaulUserID uuid.UUID
+	db.Where("email = ?", body.Email).First(&user)
+	if user.ID == defaulUserID {
+		log.Println("User not found")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "Invalid credentials",
+		})
+	}
+
+	log.Println("Верифицируем пароль...")
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password))
+	if err != nil {
+		log.Println("Invalid Password:", err)
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "Invalid credentials",
+		})
+	}
+	log.Println("... успешно")
+
+	log.Println("Генерируем токен доступа...")
+	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"sub": user.ID,
+		"exp": time.Now().Add(time.Hour * 24).Unix(), // Expires in 24 hours
+	})
+	token, err := claims.SignedString([]byte("SomeAppSecret"))
+	if err != nil {
+		fmt.Println("Error generating token:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to generate token",
+		})
+	}
+	log.Println("... успешно")
+
+	log.Println("Устанавливаем токен в куки пользователя...")
+	cookie := fiber.Cookie{
+		Name:     "jwt",
+		Value:    token,
+		Expires:  time.Now().Add(time.Hour * 24), // Expires in 24 hours
+		HTTPOnly: true,
+		Secure:   true,
+	}
+	c.Cookie(&cookie)
+	log.Println("... успешно")
+
+	// Аутентификация прошла успешно, возврящаем ответ
+	return c.Status(fiber.StatusAccepted).JSON(fiber.Map{
+		"message":            "Login successful",
+		"user_authenticated": user,
 	})
 }

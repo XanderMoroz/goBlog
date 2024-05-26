@@ -151,6 +151,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/login": {
+            "post": {
+                "description": "Authenticate User in app with given request body",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "user authentication",
+                "parameters": [
+                    {
+                        "description": "Введите данные для авторизации",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/nice": {
             "get": {
                 "description": "get the status of server.",
@@ -177,7 +217,7 @@ const docTemplate = `{
         },
         "/register": {
             "post": {
-                "description": "Register User in DB with given request body",
+                "description": "Register User in app with given request body",
                 "consumes": [
                     "application/json"
                 ],
@@ -439,6 +479,22 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.LoginRequest": {
+            "description": "Тело запроса для аутентификации пользователя",
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
                     "type": "string"
                 },
                 "password": {

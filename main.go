@@ -64,6 +64,7 @@ func main() {
 		return err
 	})
 	app.Post("/register", controllers.Register)
+	app.Post("/login", controllers.Login)
 
 	app.Get("/article", getAllArticles)
 	app.Get("/article/:id", getArticleByID)
