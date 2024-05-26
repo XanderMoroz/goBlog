@@ -77,6 +77,8 @@ func main() {
 	app.Put("/users/:id", handlers.UpdateUserById)
 	app.Delete("/users/:id", handlers.DeleteUserById)
 
+	controllers.Some()
+
 	// Start Server and Listen on PORT 3000
 	if err := app.Listen(":3000"); err != nil {
 		log.Fatal(err)

@@ -14,6 +14,26 @@ import (
 	"github.com/XanderMoroz/goBlog/internal/models"
 )
 
+func Some() {
+
+	pass := "мой пароль"
+
+	// Хэшируем пароль
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
+	if err != nil {
+		log.Println("Ghjjbkdhvh")
+	}
+
+	log.Println("мой пароль:", pass)
+	log.Println("Хэш пароля:", hashedPassword)
+
+	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(pass))
+	if err != nil {
+		log.Println("Invalid Password:", err)
+	}
+	log.Println("... успешно")
+}
+
 // @Summary        user registration
 // @Description    Register User in app with given request body
 // @Tags           Users
@@ -51,7 +71,7 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	// Хэшируем пароль
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Email), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to hash password",
@@ -66,6 +86,7 @@ func Register(c *fiber.Ctx) error {
 	log.Printf("	ID: <%+v>\n", user.ID)
 	log.Printf("	Имя: <%+v>\n", user.Name)
 	log.Printf("	Email: <%+v>\n", user.Email)
+	log.Printf("	hashedPassword: <%+v>\n", hashedPassword)
 
 	// Создаем пользователя в БД
 	err = db.Create(&user).Error
@@ -87,7 +108,7 @@ func Register(c *fiber.Ctx) error {
 // @Accept         json
 // @Produce        json
 // @Param          request         	body        models.LoginRequest    true    "Введите данные для авторизации"
-// @Success        201              {string}    string
+// @Success        201              {string}    map[]
 // @Failure        400              {string}    string    "Bad Request"
 // @Router         /login 			[post]
 func Login(c *fiber.Ctx) error {
@@ -116,7 +137,13 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	log.Println("Верифицируем пароль...")
-	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password))
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(body.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to hash password",
+		})
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(body.Password))
 	if err != nil {
 		log.Println("Invalid Password:", err)
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -156,3 +183,40 @@ func Login(c *fiber.Ctx) error {
 		"user_authenticated": user,
 	})
 }
+
+// func User(c *fiber.Ctx) error {
+//     fmt.Println("Request to get user...")
+
+//     // Retrieve JWT token from cookie
+//     cookie := c.Cookies("jwt")
+
+//     // Parse JWT token with claims
+//     token, err := jwt.ParseWithClaims(cookie, &jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
+//         return []byte(secretKey), nil
+//     })
+
+//     // Handle token parsing errors
+//     if err != nil {
+//         return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+//             "error": "Unauthorized",
+//         })
+//     }
+
+//     // Extract claims from token
+//     claims, ok := token.Claims.(*jwt.MapClaims)
+//     if !ok {
+//         return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+//             "error": "Failed to parse claims",
+//         })
+//     }
+
+//     // Extract user ID from claims
+//     id, _ := (*claims)["sub"].(string)
+//     user := models.User{ID: uint(id)}
+
+//     // Query user from database using ID
+//     database.DB.Where("id =?", id).First(&user)
+
+//     // Return user details as JSON response
+//     return c.JSON(user)
+// }
