@@ -38,11 +38,12 @@ func AddNewUser(c *fiber.Ctx) error {
 
 	// Add a uuid to the note
 	user.ID = uuid.New()
-	// Create the Note and return error if encountered
+
 	log.Printf("Добавляем в БД нового пользователя:")
 	log.Printf("	ID: <%+v>\n", user.ID)
-	log.Printf("	Имя: <%+v>\n", user.FirstName)
+	log.Printf("	Имя: <%+v>\n", user.Name)
 
+	// Создаем пользователя
 	err = db.Create(&user).Error
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Could not create user", "data": err})
@@ -50,7 +51,7 @@ func AddNewUser(c *fiber.Ctx) error {
 
 	log.Println("Новый пользователь — успешно создан:")
 	log.Printf("	ID: <%s>\n", user.ID)
-	log.Printf("	Имя: <%s>\n", user.FirstName)
+	log.Printf("	Имя: <%s>\n", user.Name)
 
 	// Return the created note
 	return c.JSON(fiber.Map{"status": "success", "message": "User Created", "data": user})
@@ -77,7 +78,7 @@ func GetAllUsers(c *fiber.Ctx) error {
 
 	log.Println("Список пользователей — успешно извлечен:")
 	for _, user := range users {
-		log.Printf("User ID: %s, Name: %s %s, Email: %s\n", user.ID, user.FirstName, user.LastName, user.Email)
+		log.Printf("User ID: <%s>, Name: <%s>, Email: <%s>\n", user.ID, user.Name, user.Email)
 	}
 
 	if len(users) == 0 {
@@ -126,10 +127,9 @@ func GetUserById(c *fiber.Ctx) error {
 		return c.Status(404).JSON(fiber.Map{"status": "error", "message": "User not found", "data": nil})
 	}
 
-	log.Println("Пользователей — успешно извлечен:")
+	log.Println("Пользователь — успешно извлечен:")
 	log.Printf("	ID: <%s>\n", user.ID)
-	log.Printf("	Имя: <%s>\n", user.FirstName)
-	log.Printf("	Фамилия: <%s>\n", user.LastName)
+	log.Printf("	Имя: <%s>\n", user.Name)
 	log.Printf("	E-mail: <%s>\n", user.Email)
 
 	// Return the note with the Id
@@ -159,7 +159,7 @@ func UpdateUserById(c *fiber.Ctx) error {
 	// Read the param userUUID
 	id := c.Params("id")
 
-	// Retrieve the record you want to update
+	// Извлекаем запись по ID
 	result := db.First(&user, "ID = ?", id)
 
 	if result.Error != nil {
@@ -184,12 +184,10 @@ func UpdateUserById(c *fiber.Ctx) error {
 		})
 	}
 	log.Println("Тело запроса извлечено:")
-	log.Printf("	Новое Имя: <%s>\n", body.FirstName)
-	log.Printf("	Новая Фамилия: <%s>\n", body.LastName)
+	log.Printf("	Новое Имя: <%s>\n", body.Name)
 	log.Printf("	Новый E-mail: <%s>\n", body.Email)
 
-	user.FirstName = body.FirstName
-	user.LastName = body.LastName
+	user.Name = body.Name
 	user.Email = body.Email
 
 	// Save the changes back to the database
@@ -200,8 +198,7 @@ func UpdateUserById(c *fiber.Ctx) error {
 
 	log.Println("Пользователь — успешно обновлен:")
 	log.Printf("	ID: <%s>\n", user.ID)
-	log.Printf("	Имя: <%s>\n", user.FirstName)
-	log.Printf("	Фамилия: <%s>\n", user.LastName)
+	log.Printf("	Имя: <%s>\n", user.Name)
 	log.Printf("	E-mail: <%s>\n", user.Email)
 
 	// Return success message
@@ -355,8 +352,7 @@ func UpdateUserByIdFromDB() {
 		panic("failed to retrieve user: " + result.Error.Error())
 	}
 
-	user.FirstName = "Agnes"
-	user.LastName = "Doe"
+	user.Name = "Agnes"
 	user.Email = "agnesdo@example.com"
 
 	// Save the changes back to the database
@@ -367,8 +363,7 @@ func UpdateUserByIdFromDB() {
 
 	log.Println("Пользователь — успешно обновлен:")
 	log.Printf("	ID: <%s>\n", user.ID)
-	log.Printf("	Имя: <%s>\n", user.FirstName)
-	log.Printf("	Фамилия: <%s>\n", user.LastName)
+	log.Printf("	Имя: <%s>\n", user.Name)
 	log.Printf("	E-mail: <%s>\n", user.Email)
 }
 

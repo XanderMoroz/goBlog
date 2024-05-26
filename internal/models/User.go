@@ -9,13 +9,11 @@ import (
 
 type User struct {
 	gorm.Model
-	ID        uuid.UUID `gorm:"type:uuid"`
-	FirstName string    `gorm:"not null"`
-	LastName  string    `gorm:"not null"`
+	ID uuid.UUID `gorm:"type:uuid"`
+	// ID       uint   `gorm:"primaryKey;autoIncrement" json:"id"`
+	Name      string    `gorm:"not null"`
 	Email     string    `gorm:"uniqueIndex"`
-	Country   string    `gorm:"not null"`
-	Role      string    `gorm:"not null"`
-	Age       int       `gorm:"not null;size:3"`
+	Password  []byte    `json:"-"` // contain the hashed password.
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 	DeletedAt gorm.DeletedAt
@@ -24,24 +22,25 @@ type User struct {
 // CreateUserRequest
 // @Description Тело запроса для создания пользователя
 type CreateUserRequest struct {
-	FirstName string `json:"firstName" validate:"required"`
-	LastName  string `json:"LastName" validate:"required"`
-	Email     string `json:"email" validate:"required"`
-	Country   string `json:"country" validate:"required"`
-	Role      string `json:"role" validate:"required"`
-	Age       int    `json:"age" validate:"required"`
+	Name     string `json:"name" validate:"required"`
+	Email    string `json:"email" validate:"required"`
+	Password string `json:"password" validate:"required"`
+}
+
+// SignUpUserRequest
+// @Description Тело запроса для регистрации пользователя
+type SignUpUserRequest struct {
+	Name     string `json:"name" validate:"required"`
+	Email    string `json:"email" validate:"required"`
+	Password string `json:"password" validate:"required"`
 }
 
 // CreateUserRequest
-// @Description Тело запроса для создания пользователя
+// @Description Тело ответа после оздания пользователя
 type UserResponse struct {
 	ID        string    `json:"id"`
-	FirstName string    `json:"firstName" validate:"required"`
-	LastName  string    `json:"lastName" validate:"required"`
+	Name      string    `json:"name" validate:"required"`
 	Email     string    `json:"email" validate:"required"`
-	Country   string    `json:"country" validate:"required"`
-	Role      string    `json:"role" validate:"required"`
-	Age       int       `json:"age" validate:"required"`
 	CreatedAt time.Time `json:"createdAt" validate:"required"`
 	UpdatedAt time.Time `json:"updatedAt" validate:"required"`
 }
@@ -49,9 +48,6 @@ type UserResponse struct {
 // CreateUserRequest
 // @Description Тело запроса для обновления пользователя
 type UpdateUserBody struct {
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	Email     string `json:"email"`
-	// Role      string `json:"role"`
-	// Age       int    `json:"age"`
+	Name  string `json:"firstName"`
+	Email string `json:"email"`
 }

@@ -11,6 +11,7 @@ import (
 	// "github.com/google/uuid"
 
 	"github.com/XanderMoroz/goBlog/database"
+	"github.com/XanderMoroz/goBlog/internal/controllers"
 	"github.com/XanderMoroz/goBlog/internal/handlers"
 
 	"github.com/gofiber/swagger"
@@ -34,6 +35,9 @@ import (
 
 func main() {
 
+	log.Println("Подключаюсь к базе данных")
+	database.Connect()
+
 	// Start a new fiber app
 	log.Println("Инициализируем приложение Fiber")
 	app := fiber.New(fiber.Config{
@@ -47,9 +51,6 @@ func main() {
 	app.Use(recover.New())
 	app.Use(cors.New())
 
-	log.Println("Подключаюсь к базе данных")
-	database.Connect()
-
 	// handlers.CreateUserInDB()
 	// handlers.GetUsersFromDB()
 	// handlers.GetUserByIdFromDB()
@@ -62,6 +63,7 @@ func main() {
 		err := c.SendString("And the API is UP! Go to:\nhttp://127.0.0.1:3000/swagger/index.html")
 		return err
 	})
+	app.Post("/register", controllers.Register)
 
 	app.Get("/article", getAllArticles)
 	app.Get("/article/:id", getArticleByID)

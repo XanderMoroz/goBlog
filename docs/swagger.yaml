@@ -14,25 +14,30 @@ definitions:
   models.CreateUserRequest:
     description: Тело запроса для создания пользователя
     properties:
-      LastName:
-        type: string
-      age:
-        type: integer
-      country:
-        type: string
       email:
         type: string
-      firstName:
+      name:
         type: string
-      role:
+      password:
         type: string
     required:
-    - LastName
-    - age
-    - country
     - email
-    - firstName
-    - role
+    - name
+    - password
+    type: object
+  models.SignUpUserRequest:
+    description: Тело запроса для регистрации пользователя
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
     type: object
   models.UpdateUserBody:
     description: Тело запроса для обновления пользователя
@@ -41,38 +46,24 @@ definitions:
         type: string
       firstName:
         type: string
-      lastName:
-        type: string
     type: object
   models.UserResponse:
-    description: Тело запроса для создания пользователя
+    description: Тело ответа после оздания пользователя
     properties:
-      age:
-        type: integer
-      country:
-        type: string
       createdAt:
         type: string
       email:
         type: string
-      firstName:
-        type: string
       id:
         type: string
-      lastName:
-        type: string
-      role:
+      name:
         type: string
       updatedAt:
         type: string
     required:
-    - age
-    - country
     - createdAt
     - email
-    - firstName
-    - lastName
-    - role
+    - name
     - updatedAt
     type: object
 host: 127.0.0.1:3000
@@ -190,6 +181,32 @@ paths:
       summary: Show the status of server.
       tags:
       - root
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register User in DB with given request body
+      parameters:
+      - description: Введите данные для регистрации
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.SignUpUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: user registration
+      tags:
+      - Users
   /users:
     get:
       description: Get all users from db

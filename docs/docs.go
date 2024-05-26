@@ -175,6 +175,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/register": {
+            "post": {
+                "description": "Register User in DB with given request body",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "user registration",
+                "parameters": [
+                    {
+                        "description": "Введите данные для регистрации",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SignUpUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "description": "Get all users from db",
@@ -390,30 +430,38 @@ const docTemplate = `{
             "description": "Тело запроса для создания пользователя",
             "type": "object",
             "required": [
-                "LastName",
-                "age",
-                "country",
                 "email",
-                "firstName",
-                "role"
+                "name",
+                "password"
             ],
             "properties": {
-                "LastName": {
-                    "type": "string"
-                },
-                "age": {
-                    "type": "integer"
-                },
-                "country": {
-                    "type": "string"
-                },
                 "email": {
                     "type": "string"
                 },
-                "firstName": {
+                "name": {
                     "type": "string"
                 },
-                "role": {
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.SignUpUserRequest": {
+            "description": "Тело запроса для регистрации пользователя",
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }
@@ -427,48 +475,29 @@ const docTemplate = `{
                 },
                 "firstName": {
                     "type": "string"
-                },
-                "lastName": {
-                    "type": "string"
                 }
             }
         },
         "models.UserResponse": {
-            "description": "Тело запроса для создания пользователя",
+            "description": "Тело ответа после оздания пользователя",
             "type": "object",
             "required": [
-                "age",
-                "country",
                 "createdAt",
                 "email",
-                "firstName",
-                "lastName",
-                "role",
+                "name",
                 "updatedAt"
             ],
             "properties": {
-                "age": {
-                    "type": "integer"
-                },
-                "country": {
-                    "type": "string"
-                },
                 "createdAt": {
                     "type": "string"
                 },
                 "email": {
                     "type": "string"
                 },
-                "firstName": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "string"
                 },
-                "lastName": {
-                    "type": "string"
-                },
-                "role": {
+                "name": {
                     "type": "string"
                 },
                 "updatedAt": {
