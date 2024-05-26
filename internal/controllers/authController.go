@@ -5,8 +5,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 
@@ -115,7 +115,6 @@ func Login(c *fiber.Ctx) error {
 	log.Println("Получен запрос на аутентификацию пользователя")
 
 	db := database.DB
-	log.Println("Received a Login request")
 
 	// Parse request body
 	body := new(models.LoginRequest)
@@ -153,6 +152,7 @@ func Login(c *fiber.Ctx) error {
 	log.Println("... успешно")
 
 	log.Println("Генерируем токен доступа...")
+	log.Println("user.ID:", user.ID)
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": user.ID,
 		"exp": time.Now().Add(time.Hour * 24).Unix(), // Expires in 24 hours
@@ -164,15 +164,16 @@ func Login(c *fiber.Ctx) error {
 			"error": "Failed to generate token",
 		})
 	}
-	log.Println("... успешно")
+	log.Println("... успешно:")
+	log.Println("... token:", token)
 
 	log.Println("Устанавливаем токен в куки пользователя...")
 	cookie := fiber.Cookie{
-		Name:     "jwt",
-		Value:    token,
-		Expires:  time.Now().Add(time.Hour * 24), // Expires in 24 hours
-		HTTPOnly: true,
-		Secure:   true,
+		Name:    "jwt",
+		Value:   token,
+		Expires: time.Now().Add(time.Hour * 24), // Expires in 24 hours
+		// HTTPOnly: true,
+		// Secure:   true,
 	}
 	c.Cookie(&cookie)
 	log.Println("... успешно")
@@ -184,39 +185,66 @@ func Login(c *fiber.Ctx) error {
 	})
 }
 
-// func User(c *fiber.Ctx) error {
-//     fmt.Println("Request to get user...")
+// @Summary		get current user
+// @Description Get token from users cookee
+// @Tags 		Users
+// @ID			get-current-user
+// @Produce		json
+// @Success		200		{object}	[]models.UserResponse
+// @Router		/current_user [get]
+func GetCurrentUser(c *fiber.Ctx) error {
+	log.Println("Получен запрос на извлечение авторизованного пользователя")
 
-//     // Retrieve JWT token from cookie
-//     cookie := c.Cookies("jwt")
+	db := database.DB
 
-//     // Parse JWT token with claims
-//     token, err := jwt.ParseWithClaims(cookie, &jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
-//         return []byte(secretKey), nil
-//     })
+	// Извлекаем JWT токен из куки пользователя
+	cookie := c.Cookies("jwt")
 
-//     // Handle token parsing errors
-//     if err != nil {
-//         return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-//             "error": "Unauthorized",
-//         })
-//     }
+	// Parse JWT token with claims
+	hmacSecretString := "SomeAppSecret"
+	hmacSecret := []byte(hmacSecretString)
 
-//     // Extract claims from token
-//     claims, ok := token.Claims.(*jwt.MapClaims)
-//     if !ok {
-//         return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-//             "error": "Failed to parse claims",
-//         })
-//     }
+	log.Println("Извлекаем токен из куки пользователя...")
+	token, err := jwt.Parse(cookie, func(token *jwt.Token) (interface{}, error) {
+		// check token signing method etc
+		return hmacSecret, nil
+	})
+	// Handle token parsing errors
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to parse token",
+		})
+	} else {
+		log.Println("... успешно")
+	}
 
-//     // Extract user ID from claims
-//     id, _ := (*claims)["sub"].(string)
-//     user := models.User{ID: uint(id)}
+	log.Println("Извлекаем USER_ID из токена...")
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		log.Printf("Invalid JWT Token")
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to parse claims",
+		})
+	} else {
+		log.Println("... успешно")
+	}
 
-//     // Query user from database using ID
-//     database.DB.Where("id =?", id).First(&user)
+	var user models.User
+	log.Println("Извлекаем пользователя по ID...")
+	result := db.Where("ID =?", claims["sub"]).First(&user)
 
-//     // Return user details as JSON response
-//     return c.JSON(user)
-// }
+	if result.Error != nil {
+		panic("failed to retrieve user: " + result.Error.Error())
+	} else {
+		log.Println("Пользователь — успешно извлечен:")
+		log.Printf("	ID: <%s>\n", user.ID)
+		log.Printf("	Имя: <%s>\n", user.Name)
+		log.Printf("	E-mail: <%s>\n", user.Email)
+	}
+
+	// Return user details as JSON response
+	return c.JSON(fiber.Map{
+		"message":      "User retrieved successful",
+		"current_user": user,
+	})
+}

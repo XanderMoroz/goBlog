@@ -176,6 +176,22 @@ paths:
       summary: get a article item by ID
       tags:
       - Articles
+  /current_user:
+    get:
+      description: Get token from users cookee
+      operationId: get-current-user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.UserResponse'
+            type: array
+      summary: get current user
+      tags:
+      - Users
   /login:
     post:
       consumes:

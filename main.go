@@ -65,6 +65,7 @@ func main() {
 	})
 	app.Post("/register", controllers.Register)
 	app.Post("/login", controllers.Login)
+	app.Get("/current_user", controllers.GetCurrentUser)
 
 	app.Get("/article", getAllArticles)
 	app.Get("/article/:id", getArticleByID)
@@ -76,8 +77,6 @@ func main() {
 	app.Get("/users/:id", handlers.GetUserById)
 	app.Put("/users/:id", handlers.UpdateUserById)
 	app.Delete("/users/:id", handlers.DeleteUserById)
-
-	controllers.Some()
 
 	// Start Server and Listen on PORT 3000
 	if err := app.Listen(":3000"); err != nil {
