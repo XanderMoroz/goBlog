@@ -121,6 +121,21 @@ paths:
       summary: user authentication
       tags:
       - Authentication
+  /api/v1/logout:
+    get:
+      description: Clear JWT token by setting an empty value and expired time in the
+        cookie
+      operationId: logout-current-user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: logout current user
+      tags:
+      - Authentication
   /api/v1/register:
     post:
       consumes:

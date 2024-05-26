@@ -9,7 +9,6 @@ import (
 
 	"github.com/XanderMoroz/goBlog/database"
 	"github.com/XanderMoroz/goBlog/internal/controllers"
-	"github.com/XanderMoroz/goBlog/internal/handlers"
 
 	"github.com/gofiber/swagger"
 
@@ -56,16 +55,18 @@ func main() {
 		return err
 	})
 
-	// Setup routes
+	// Auth routes
 	app.Post("/api/v1/register", controllers.Register)
 	app.Post("/api/v1/login", controllers.Login)
 	app.Get("/api/v1/current_user", controllers.GetCurrentUser)
+	app.Get("/api/v1/logout", controllers.Logout)
 
-	app.Get("/users", handlers.GetAllUsers)
-	app.Post("/users", handlers.AddNewUser)
-	app.Get("/users/:id", handlers.GetUserById)
-	app.Put("/users/:id", handlers.UpdateUserById)
-	app.Delete("/users/:id", handlers.DeleteUserById)
+	// User routes
+	app.Get("/users", controllers.GetAllUsers)
+	app.Post("/users", controllers.AddNewUser)
+	app.Get("/users/:id", controllers.GetUserById)
+	app.Put("/users/:id", controllers.UpdateUserById)
+	app.Delete("/users/:id", controllers.DeleteUserById)
 
 	// Start Server and Listen on PORT 3000
 	if err := app.Listen(":3000"); err != nil {

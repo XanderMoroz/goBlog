@@ -88,6 +88,27 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/logout": {
+            "get": {
+                "description": "Clear JWT token by setting an empty value and expired time in the cookie",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "logout current user",
+                "operationId": "logout-current-user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/register": {
             "post": {
                 "description": "Register User in app with given request body",

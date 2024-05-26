@@ -17,6 +17,7 @@ type User struct {
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 	DeletedAt gorm.DeletedAt
+	Articles  []Article `gorm:"foreignKey:UserID"`
 }
 
 // LoginRequest
