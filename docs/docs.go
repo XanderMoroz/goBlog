@@ -466,7 +466,7 @@ const docTemplate = `{
             }
         },
         "models.UserResponse": {
-            "description": "Тело ответа после оздания пользователя",
+            "description": "Тело ответа после cоздания пользователя",
             "type": "object",
             "required": [
                 "createdAt",
@@ -498,7 +498,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "127.0.0.1:3000",
+	Host:             "127.0.0.1:8080",
 	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "Good News on Go",

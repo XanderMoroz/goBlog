@@ -9,6 +9,7 @@ import (
 
 	"github.com/XanderMoroz/goBlog/database"
 	"github.com/XanderMoroz/goBlog/internal/controllers"
+	"github.com/XanderMoroz/goBlog/internal/middlewares"
 
 	"github.com/gofiber/swagger"
 
@@ -27,7 +28,7 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host 127.0.0.1:3000
+// @host 127.0.0.1:8080
 
 func main() {
 
@@ -51,14 +52,14 @@ func main() {
 
 	app.Get("/swagger/*", swagger.HandlerDefault) // default
 	app.Get("/", func(c *fiber.Ctx) error {
-		err := c.SendString("And the API is UP! Go to:\nhttp://127.0.0.1:3000/swagger/index.html")
+		err := c.SendString("And the API is UP! Go to:\nhttp://127.0.0.1:8080/swagger/index.html")
 		return err
 	})
 
 	// Auth routes
 	app.Post("/api/v1/register", controllers.Register)
 	app.Post("/api/v1/login", controllers.Login)
-	app.Get("/api/v1/current_user", controllers.GetCurrentUser)
+	app.Get("/api/v1/current_user", middlewares.JWTProtected(), controllers.GetCurrentUser)
 	app.Get("/api/v1/logout", controllers.Logout)
 
 	// User routes
@@ -71,8 +72,8 @@ func main() {
 	// User routes
 	app.Post("/articles", controllers.CreateMyArticle)
 
-	// Start Server and Listen on PORT 3000
-	if err := app.Listen(":3000"); err != nil {
+	// Start Server and Listen on PORT 8080
+	if err := app.Listen(":8080"); err != nil {
 		log.Fatal(err)
 	}
 }

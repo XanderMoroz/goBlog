@@ -15,7 +15,7 @@
         },
         "version": "1.0"
     },
-    "host": "127.0.0.1:3000",
+    "host": "127.0.0.1:8080",
     "paths": {
         "/api/v1/current_user": {
             "get": {
@@ -459,7 +459,7 @@
             }
         },
         "models.UserResponse": {
-            "description": "Тело ответа после оздания пользователя",
+            "description": "Тело ответа после cоздания пользователя",
             "type": "object",
             "required": [
                 "createdAt",

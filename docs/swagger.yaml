@@ -58,7 +58,7 @@ definitions:
         type: string
     type: object
   models.UserResponse:
-    description: Тело ответа после оздания пользователя
+    description: Тело ответа после cоздания пользователя
     properties:
       createdAt:
         type: string
@@ -76,7 +76,7 @@ definitions:
     - name
     - updatedAt
     type: object
-host: 127.0.0.1:3000
+host: 127.0.0.1:8080
 info:
   contact:
     email: support@swagger.io
