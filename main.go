@@ -9,7 +9,8 @@ import (
 
 	"github.com/XanderMoroz/goBlog/database"
 	"github.com/XanderMoroz/goBlog/internal/controllers"
-	"github.com/XanderMoroz/goBlog/internal/middlewares"
+
+	// "github.com/XanderMoroz/goBlog/internal/middlewares"
 
 	"github.com/gofiber/swagger"
 
@@ -59,7 +60,7 @@ func main() {
 	// Auth routes
 	app.Post("/api/v1/register", controllers.Register)
 	app.Post("/api/v1/login", controllers.Login)
-	app.Get("/api/v1/current_user", middlewares.JWTProtected(), controllers.GetCurrentUser)
+	app.Get("/api/v1/current_user", controllers.GetCurrentUser)
 	app.Get("/api/v1/logout", controllers.Logout)
 
 	// User routes

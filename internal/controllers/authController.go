@@ -12,27 +12,28 @@ import (
 
 	"github.com/XanderMoroz/goBlog/database"
 	"github.com/XanderMoroz/goBlog/internal/models"
+	"github.com/XanderMoroz/goBlog/internal/utils"
 )
 
-func Some() {
+// func Some() {
 
-	pass := "мой пароль"
+// 	pass := "мой пароль"
 
-	// Хэшируем пароль
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
-	if err != nil {
-		log.Println("Ghjjbkdhvh")
-	}
+// 	// Хэшируем пароль
+// 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
+// 	if err != nil {
+// 		log.Println("Ghjjbkdhvh")
+// 	}
 
-	log.Println("мой пароль:", pass)
-	log.Println("Хэш пароля:", hashedPassword)
+// 	log.Println("мой пароль:", pass)
+// 	log.Println("Хэш пароля:", hashedPassword)
 
-	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(pass))
-	if err != nil {
-		log.Println("Invalid Password:", err)
-	}
-	log.Println("... успешно")
-}
+// 	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(pass))
+// 	if err != nil {
+// 		log.Println("Invalid Password:", err)
+// 	}
+// 	log.Println("... успешно")
+// }
 
 // @Summary        user registration
 // @Description    Register User in app with given request body
@@ -198,40 +199,49 @@ func GetCurrentUser(c *fiber.Ctx) error {
 	db := database.DB
 
 	// Извлекаем JWT токен из куки пользователя
-	cookie := c.Cookies("jwt")
+	cookieWithJWT := c.Cookies("jwt")
 
-	// Parse JWT token with claims
-	hmacSecretString := "SomeAppSecret"
-	hmacSecret := []byte(hmacSecretString)
+	userID, err := utils.ParseUserIDFromJWTToken(cookieWithJWT)
 
-	log.Println("Извлекаем токен из куки пользователя...")
-	token, err := jwt.Parse(cookie, func(token *jwt.Token) (interface{}, error) {
-		// check token signing method etc
-		return hmacSecret, nil
-	})
-	// Handle token parsing errors
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to parse token",
-		})
+		log.Println("Ошибка:", err)
 	} else {
-		log.Println("... успешно")
+		log.Println("USER_ID из токена:", userID)
 	}
 
-	log.Println("Извлекаем USER_ID из токена...")
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		log.Printf("Invalid JWT Token")
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to parse claims",
-		})
-	} else {
-		log.Println("... успешно")
-	}
+	// // Parse JWT token with claims
+	// hmacSecretString := "SomeAppSecret"
+	// hmacSecret := []byte(hmacSecretString)
+
+	// log.Println("Извлекаем токен из куки пользователя...")
+	// token, err := jwt.Parse(cookieWithJWT, func(token *jwt.Token) (interface{}, error) {
+	// 	// check token signing method etc
+	// 	return hmacSecret, nil
+	// })
+	// // Handle token parsing errors
+	// if err != nil {
+	// 	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+	// 		"error": "Failed to parse token",
+	// 	})
+	// } else {
+	// 	log.Println("... успешно")
+	// }
+
+	// log.Println("Извлекаем USER_ID из токена...")
+	// claims, ok := token.Claims.(jwt.MapClaims)
+	// if !ok {
+	// 	log.Printf("Invalid JWT Token")
+	// 	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+	// 		"error": "Failed to parse claims",
+	// 	})
+	// } else {
+	// 	log.Println("... успешно")
+	// }
 
 	var user models.User
 	log.Println("Извлекаем пользователя по ID...")
-	result := db.Where("ID =?", claims["sub"]).First(&user)
+	// result := db.Where("ID =?", claims["sub"]).First(&user)
+	result := db.Where("ID =?", userID).First(&user)
 
 	if result.Error != nil {
 		panic("failed to retrieve user: " + result.Error.Error())
@@ -248,6 +258,33 @@ func GetCurrentUser(c *fiber.Ctx) error {
 		"current_user": user,
 	})
 }
+
+// func ParseJWTToken(cookieWithJWT string) (string, error) {
+
+// 	hmacSecretString := "SomeAppSecret"
+// 	hmacSecret := []byte(hmacSecretString)
+
+// 	token, err := jwt.Parse(cookieWithJWT, func(token *jwt.Token) (interface{}, error) {
+// 		// Проверяем метод подписи токена и другие параметры
+// 		return hmacSecret, nil
+// 	})
+
+// 	if err != nil {
+// 		return "", fmt.Errorf("Ошибка при разборе токена: %v", err)
+// 	}
+
+// 	claims, ok := token.Claims.(jwt.MapClaims)
+// 	if !ok {
+// 		return "", fmt.Errorf("Неверный JWT токен")
+// 	}
+
+// 	userID, ok := claims["sub"].(string)
+// 	if !ok {
+// 		return "", fmt.Errorf("Не удалось извлечь USER_ID из токена")
+// 	}
+
+// 	return userID, nil
+// }
 
 // @Summary		logout current user
 // @Description Clear JWT token by setting an empty value and expired time in the cookie
