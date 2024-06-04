@@ -1,9 +1,6 @@
 package models
 
 import (
-	// "errors"
-	// "html"
-	// "strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -21,6 +18,8 @@ type Article struct {
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 	DeletedAt gorm.DeletedAt
+	// Категории к которым принадлежит статья
+	Categories []*Category `gorm:"many2many:article_categories;"`
 }
 
 // CreateArticleRequest
@@ -30,12 +29,12 @@ type CreateArticleRequest struct {
 	Content string `json:"content" validate:"required"`
 }
 
-// UserResponse
+// ArticleResponse
 // @Description Тело ответа после cоздания статьи
 type ArticleResponse struct {
 	ID        string    `json:"id"`
-	Name      string    `json:"name" validate:"required"`
-	Email     string    `json:"email" validate:"required"`
+	Title     string    `json:"title" validate:"required"`
+	Content   string    `json:"content" validate:"required"`
 	CreatedAt time.Time `json:"createdAt" validate:"required"`
 	UpdatedAt time.Time `json:"updatedAt" validate:"required"`
 }

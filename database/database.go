@@ -23,7 +23,8 @@ type AppEnvConfig struct {
 }
 
 // Указатель на БД
-var DB *gorm.DB // (он будет осуществлять запросы)
+// (он будет осуществлять запросы)
+var DB *gorm.DB
 
 // Извлкает переменные окружения и складывает в DBEnvConfig
 func GetEnvConfig() *AppEnvConfig {
@@ -76,7 +77,7 @@ func Connect() {
 	DB = db
 
 	log.Printf("Устанавливаем миграции в БД...")
-	db.AutoMigrate(&models.User{}, &models.Article{})
+	db.AutoMigrate(&models.User{}, &models.Article{}, &models.Category{})
 	if err != nil {
 		panic("failed to perform migrations: " + err.Error())
 	}

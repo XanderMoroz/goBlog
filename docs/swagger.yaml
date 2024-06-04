@@ -2,20 +2,36 @@ definitions:
   models.ArticleResponse:
     description: Тело ответа после cоздания статьи
     properties:
-      createdAt:
+      content:
         type: string
-      email:
+      createdAt:
         type: string
       id:
         type: string
-      name:
+      title:
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - content
+    - createdAt
+    - title
+    - updatedAt
+    type: object
+  models.CategoryResponse:
+    description: Тело ответа после извлечения статьи
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      title:
         type: string
       updatedAt:
         type: string
     required:
     - createdAt
-    - email
-    - name
+    - title
     - updatedAt
     type: object
   models.CreateArticleRequest:
@@ -27,6 +43,14 @@ definitions:
         type: string
     required:
     - content
+    - title
+    type: object
+  models.CreateCategoryBody:
+    description: Тело запроса для создания статьи
+    properties:
+      title:
+        type: string
+    required:
     - title
     type: object
   models.LoginRequest:
@@ -308,4 +332,45 @@ paths:
       summary: update article by ID
       tags:
       - Articles
+  /categories:
+    get:
+      description: Get all categories from db
+      operationId: get-all-categories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.CategoryResponse'
+            type: array
+      summary: get all categories
+      tags:
+      - Categories
+    post:
+      consumes:
+      - application/json
+      description: Creating Category in DB with given request body
+      parameters:
+      - description: Введите название категории статьи
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateCategoryBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: create new category
+      tags:
+      - Categories
 swagger: "2.0"

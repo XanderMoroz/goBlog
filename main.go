@@ -73,6 +73,10 @@ func main() {
 	app.Put("/articles/:id", controllers.UpdateMyArticleById)
 	app.Delete("/articles/:id", controllers.DeleteMyArticleById)
 
+	// Category routes
+	app.Post("/categories", controllers.CreateNewCategory)
+	app.Get("/categories", controllers.GetAllCategories)
+
 	// Start Server and Listen on PORT 8080
 	if err := app.Listen(":8080"); err != nil {
 		log.Fatal(err)

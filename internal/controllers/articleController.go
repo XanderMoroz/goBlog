@@ -4,8 +4,6 @@ import (
 	"log"
 	"net/http"
 
-	// "net/http"
-
 	"github.com/gofiber/fiber/v2"
 
 	"github.com/XanderMoroz/goBlog/database"

@@ -338,6 +338,68 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/categories": {
+            "get": {
+                "description": "Get all categories from db",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "get all categories",
+                "operationId": "get-all-categories",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.CategoryResponse"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creating Category in DB with given request body",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "create new category",
+                "parameters": [
+                    {
+                        "description": "Введите название категории статьи",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateCategoryBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -345,22 +407,45 @@ const docTemplate = `{
             "description": "Тело ответа после cоздания статьи",
             "type": "object",
             "required": [
+                "content",
                 "createdAt",
-                "email",
-                "name",
+                "title",
+                "updatedAt"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CategoryResponse": {
+            "description": "Тело ответа после извлечения статьи",
+            "type": "object",
+            "required": [
+                "createdAt",
+                "title",
                 "updatedAt"
             ],
             "properties": {
                 "createdAt": {
                     "type": "string"
                 },
-                "email": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "string"
                 },
-                "name": {
+                "title": {
                     "type": "string"
                 },
                 "updatedAt": {
@@ -379,6 +464,18 @@ const docTemplate = `{
                 "content": {
                     "type": "string"
                 },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CreateCategoryBody": {
+            "description": "Тело запроса для создания статьи",
+            "type": "object",
+            "required": [
+                "title"
+            ],
+            "properties": {
                 "title": {
                     "type": "string"
                 }
