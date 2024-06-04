@@ -49,7 +49,8 @@ func main() {
 	app.Use(recover.New())
 	app.Use(cors.New())
 
-	// controllers.GetArticlesFromDB()
+	// utils.GetCategoryByNameFromDB()
+	// utils.GetArticleByIDFromDB()
 
 	app.Get("/swagger/*", swagger.HandlerDefault) // default
 	app.Get("/", func(c *fiber.Ctx) error {
@@ -76,6 +77,7 @@ func main() {
 	// Category routes
 	app.Post("/categories", controllers.CreateNewCategory)
 	app.Get("/categories", controllers.GetAllCategories)
+	app.Post("/categories/add_article", controllers.AddArticleToCategoryCategory)
 
 	// Start Server and Listen on PORT 8080
 	if err := app.Listen(":8080"); err != nil {

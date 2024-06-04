@@ -88,3 +88,50 @@ func GetAllCategories(c *fiber.Ctx) error {
 		"data":    categories,
 	})
 }
+
+// @Summary        add article to category
+// @Description    Adding Article to Category in DB with given request body
+// @Tags           Categories
+// @Accept         json
+// @Produce        json
+// @Param          request         			body        models.AddArticleToCategoryBody    true    "Введите ID статьи и название категории"
+// @Success        201              		{string}    string
+// @Failure        400              		{string}    string    "Bad Request"
+// @Router         /categories/add_article 	[post]
+func AddArticleToCategoryCategory(c *fiber.Ctx) error {
+
+	db := database.DB
+
+	body := new(models.AddArticleToCategoryBody)
+
+	// Извлекаем тело запроса
+	err := c.BodyParser(body)
+	if err != nil {
+		// Обрабатываем ошибку
+		return c.Status(500).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Проверьте данные",
+			"data":    err,
+		})
+	}
+	log.Println("Запрос успешно обработан обработан")
+
+	article := utils.GetArticleByIDFromDB(body.ArticleID)
+	// newCategory := models.Category{
+	// 	Title: body.Title,
+	// }
+
+	category := utils.GetCategoryByNameFromDB(body.CategoryName)
+	// ... Создаем новую категорию...
+
+	// result := db.Create(&newCategory)
+	db.Model(&category).Association("Articles").Append(&article)
+	db.Model(&article).Association("Categories").Append(&category)
+
+	// Возвращаем категорию
+	return c.Status(201).JSON(fiber.Map{
+		"status":  "success",
+		"message": "Article added to Category",
+		// "data":    newCategory,
+	})
+}

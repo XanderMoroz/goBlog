@@ -32,3 +32,10 @@ type CategoryResponse struct {
 	CreatedAt time.Time `json:"createdAt" validate:"required"`
 	UpdatedAt time.Time `json:"updatedAt" validate:"required"`
 }
+
+// CreateCategoryBody
+// @Description Тело запроса для создания статьи
+type AddArticleToCategoryBody struct {
+	ArticleID    string `json:"article_id" validate:"required"`
+	CategoryName string `json:"category_name" validate:"required"`
+}

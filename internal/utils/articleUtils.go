@@ -13,7 +13,7 @@ func GetArticlesFromDB() []models.Article {
 	db := database.DB
 	var articles []models.Article // article slice
 
-	result := db.Preload("User").Find(&articles)
+	result := db.Preload("Categories").Preload("User").Find(&articles)
 
 	if result.Error != nil {
 		// handle error
@@ -25,6 +25,35 @@ func GetArticlesFromDB() []models.Article {
 		log.Printf("Article ID: %d, Title: %s, Content: %s Author: <%s>\n", article.ID, article.Title, article.Content, article.User.Name)
 	}
 	return articles
+}
+
+// Извлекаем статью по ID
+func GetArticleByIDFromDB(articleID string) models.Article {
+
+	db := database.DB
+	var article models.Article // article slice
+
+	// Извлекаем статью вместе с автором и категориями
+	result := db.Preload("Categories").Preload("User").First(&article, "ID = ?", articleID)
+
+	if result.Error != nil {
+		// handle error
+		panic("failed to retrieve article: " + result.Error.Error())
+	}
+
+	if article.ID == 0 {
+		// handle error
+		panic("failed to retrieve article: " + result.Error.Error())
+	}
+
+	log.Println("Cтатья — успешно извлечена:")
+	log.Printf("	ID: <%d>\n", article.ID)
+	log.Printf("	Название: <%s>\n", article.Title)
+	log.Printf("	Содержание: <%s>\n", article.Content)
+	log.Printf("	Автор: <%s>\n", article.User.Name)
+	log.Printf("	Категории: <%v>\n", article.Categories)
+
+	return article
 }
 
 // Создаем новую статью

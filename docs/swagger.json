@@ -393,9 +393,65 @@
                     }
                 }
             }
+        },
+        "/categories/add_article": {
+            "post": {
+                "description": "Adding Article to Category in DB with given request body",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "add article to category",
+                "parameters": [
+                    {
+                        "description": "Введите ID статьи и название категории",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.AddArticleToCategoryBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "models.AddArticleToCategoryBody": {
+            "description": "Тело запроса для создания статьи",
+            "type": "object",
+            "required": [
+                "article_id",
+                "category_name"
+            ],
+            "properties": {
+                "article_id": {
+                    "type": "string"
+                },
+                "category_name": {
+                    "type": "string"
+                }
+            }
+        },
         "models.ArticleResponse": {
             "description": "Тело ответа после cоздания статьи",
             "type": "object",

@@ -1,4 +1,15 @@
 definitions:
+  models.AddArticleToCategoryBody:
+    description: Тело запроса для создания статьи
+    properties:
+      article_id:
+        type: string
+      category_name:
+        type: string
+    required:
+    - article_id
+    - category_name
+    type: object
   models.ArticleResponse:
     description: Тело ответа после cоздания статьи
     properties:
@@ -371,6 +382,32 @@ paths:
           schema:
             type: string
       summary: create new category
+      tags:
+      - Categories
+  /categories/add_article:
+    post:
+      consumes:
+      - application/json
+      description: Adding Article to Category in DB with given request body
+      parameters:
+      - description: Введите ID статьи и название категории
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddArticleToCategoryBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: add article to category
       tags:
       - Categories
 swagger: "2.0"
