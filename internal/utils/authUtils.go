@@ -3,9 +3,28 @@ package utils
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
+
+func GenerateToken(userID uuid.UUID) (string, error) {
+
+	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"sub": userID,
+		"exp": time.Now().Add(time.Hour * 24).Unix(), // Expires in 24 hours
+	})
+
+	// Replace "SomeAppSecret" with your actual secret key
+	secretKey := []byte("SomeAppSecret")
+	token, err := claims.SignedString(secretKey)
+	if err != nil {
+		return "", fmt.Errorf("failed to generate token: %v", err)
+	}
+
+	return token, nil
+}
 
 func ParseUserIDFromJWTToken(cookieWithJWT string) (string, error) {
 

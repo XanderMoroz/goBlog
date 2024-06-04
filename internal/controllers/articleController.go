@@ -5,12 +5,11 @@ import (
 	// "net/http"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
-
 	// "github.com/google/uuid"
 
 	"github.com/XanderMoroz/goBlog/database"
 	"github.com/XanderMoroz/goBlog/internal/models"
+	"github.com/XanderMoroz/goBlog/internal/utils"
 )
 
 // @Summary        create new article
@@ -40,40 +39,20 @@ func CreateMyArticle(c *fiber.Ctx) error {
 	log.Println("Запрос успешно обработан обработан")
 
 	//Извлекаем JWT токен из куки пользователя
-	cookie := c.Cookies("jwt")
+	cookieWithJWT := c.Cookies("jwt")
 
-	//Parse JWT token with claims
-	hmacSecretString := "SomeAppSecret"
-	hmacSecret := []byte(hmacSecretString)
+	log.Println("Извлекаем ID пользователя по из JWT токена")
+	userID, err := utils.ParseUserIDFromJWTToken(cookieWithJWT)
 
-	log.Println("Извлекаем токен из куки пользователя...")
-	token, err := jwt.Parse(cookie, func(token *jwt.Token) (interface{}, error) {
-		// check token signing method etc
-		return hmacSecret, nil
-	})
-	// Handle token parsing errors
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to parse token",
-		})
+		log.Println("Ошибка:", err)
 	} else {
-		log.Println("... успешно")
-	}
-
-	log.Println("Извлекаем USER_ID из токена...")
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		log.Printf("Invalid JWT Token")
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to parse claims",
-		})
-	} else {
-		log.Println("... успешно")
+		log.Println("USER_ID из токена:", userID)
 	}
 
 	var user models.User
 	log.Println("Извлекаем пользователя по ID...")
-	result := db.Where("ID =?", claims["sub"]).First(&user)
+	result := db.Where("ID =?", userID).First(&user)
 
 	if result.Error != nil {
 		panic("failed to retrieve user: " + result.Error.Error())

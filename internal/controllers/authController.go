@@ -1,12 +1,12 @@
 package controllers
 
 import (
-	"fmt"
+	// "fmt"
 	"log"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
+	// "github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 
@@ -153,20 +153,13 @@ func Login(c *fiber.Ctx) error {
 	log.Println("... успешно")
 
 	log.Println("Генерируем токен доступа...")
-	log.Println("user.ID:", user.ID)
-	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": user.ID,
-		"exp": time.Now().Add(time.Hour * 24).Unix(), // Expires in 24 hours
-	})
-	token, err := claims.SignedString([]byte("SomeAppSecret"))
+	token, err := utils.GenerateToken(user.ID)
 	if err != nil {
-		fmt.Println("Error generating token:", err)
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to generate token",
-		})
+		log.Println("Error:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate token"})
+	} else {
+		log.Println("... успешно:", token)
 	}
-	log.Println("... успешно:")
-	log.Println("... token:", token)
 
 	log.Println("Устанавливаем токен в куки пользователя...")
 	cookie := fiber.Cookie{
@@ -201,42 +194,18 @@ func GetCurrentUser(c *fiber.Ctx) error {
 	// Извлекаем JWT токен из куки пользователя
 	cookieWithJWT := c.Cookies("jwt")
 
+	log.Println("Извлекаем ID пользователя по из JWT токена")
 	userID, err := utils.ParseUserIDFromJWTToken(cookieWithJWT)
 
 	if err != nil {
 		log.Println("Ошибка:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   "Unauthorized",
+			"message": "Please Log in",
+		})
 	} else {
 		log.Println("USER_ID из токена:", userID)
 	}
-
-	// // Parse JWT token with claims
-	// hmacSecretString := "SomeAppSecret"
-	// hmacSecret := []byte(hmacSecretString)
-
-	// log.Println("Извлекаем токен из куки пользователя...")
-	// token, err := jwt.Parse(cookieWithJWT, func(token *jwt.Token) (interface{}, error) {
-	// 	// check token signing method etc
-	// 	return hmacSecret, nil
-	// })
-	// // Handle token parsing errors
-	// if err != nil {
-	// 	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-	// 		"error": "Failed to parse token",
-	// 	})
-	// } else {
-	// 	log.Println("... успешно")
-	// }
-
-	// log.Println("Извлекаем USER_ID из токена...")
-	// claims, ok := token.Claims.(jwt.MapClaims)
-	// if !ok {
-	// 	log.Printf("Invalid JWT Token")
-	// 	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-	// 		"error": "Failed to parse claims",
-	// 	})
-	// } else {
-	// 	log.Println("... успешно")
-	// }
 
 	var user models.User
 	log.Println("Извлекаем пользователя по ID...")
@@ -252,39 +221,12 @@ func GetCurrentUser(c *fiber.Ctx) error {
 		log.Printf("	E-mail: <%s>\n", user.Email)
 	}
 
-	// Return user details as JSON response
+	// Возвращаем данные пользователя
 	return c.JSON(fiber.Map{
 		"message":      "User retrieved successful",
 		"current_user": user,
 	})
 }
-
-// func ParseJWTToken(cookieWithJWT string) (string, error) {
-
-// 	hmacSecretString := "SomeAppSecret"
-// 	hmacSecret := []byte(hmacSecretString)
-
-// 	token, err := jwt.Parse(cookieWithJWT, func(token *jwt.Token) (interface{}, error) {
-// 		// Проверяем метод подписи токена и другие параметры
-// 		return hmacSecret, nil
-// 	})
-
-// 	if err != nil {
-// 		return "", fmt.Errorf("Ошибка при разборе токена: %v", err)
-// 	}
-
-// 	claims, ok := token.Claims.(jwt.MapClaims)
-// 	if !ok {
-// 		return "", fmt.Errorf("Неверный JWT токен")
-// 	}
-
-// 	userID, ok := claims["sub"].(string)
-// 	if !ok {
-// 		return "", fmt.Errorf("Не удалось извлечь USER_ID из токена")
-// 	}
-
-// 	return userID, nil
-// }
 
 // @Summary		logout current user
 // @Description Clear JWT token by setting an empty value and expired time in the cookie

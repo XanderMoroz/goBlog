@@ -53,7 +53,10 @@ func main() {
 
 	app.Get("/swagger/*", swagger.HandlerDefault) // default
 	app.Get("/", func(c *fiber.Ctx) error {
-		err := c.SendString("And the API is UP! Go to:\nhttp://127.0.0.1:8080/swagger/index.html")
+		err := c.Status(200).JSON(fiber.Map{
+			"message": "API APP is UP!",
+			"docs":    "http://127.0.0.1:8080/swagger/index.html",
+		})
 		return err
 	})
 
