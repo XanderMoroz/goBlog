@@ -1,6 +1,25 @@
 definitions:
+  models.ArticleResponse:
+    description: Тело ответа после cоздания статьи
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - createdAt
+    - email
+    - name
+    - updatedAt
+    type: object
   models.CreateArticleRequest:
-    description: Тело запроса для создания пользователя
+    description: Тело запроса для создания статьи
     properties:
       content:
         type: string
@@ -9,20 +28,6 @@ definitions:
     required:
     - content
     - title
-    type: object
-  models.CreateUserRequest:
-    description: Тело запроса для создания пользователя
-    properties:
-      email:
-        type: string
-      name:
-        type: string
-      password:
-        type: string
-    required:
-    - email
-    - name
-    - password
     type: object
   models.LoginRequest:
     description: Тело запроса для аутентификации пользователя
@@ -49,13 +54,16 @@ definitions:
     - name
     - password
     type: object
-  models.UpdateUserBody:
-    description: Тело запроса для обновления пользователя
+  models.UpdateArticleBody:
+    description: Тело запроса для обновления статьи
     properties:
-      email:
+      content:
         type: string
-      firstName:
+      title:
         type: string
+    required:
+    - content
+    - title
     type: object
   models.UserResponse:
     description: Тело ответа после cоздания пользователя
@@ -184,7 +192,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.UserResponse'
+              $ref: '#/definitions/models.ArticleResponse'
             type: array
       summary: get all articles
       tags:
@@ -214,53 +222,12 @@ paths:
       summary: create new article
       tags:
       - Articles
-  /users:
-    get:
-      description: Get all users from db
-      operationId: get-all-users
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.UserResponse'
-            type: array
-      summary: get all users
-      tags:
-      - Users
-    post:
-      consumes:
-      - application/json
-      description: Creating User in DB with given request body
-      parameters:
-      - description: Введите данные пользователя
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/models.CreateUserRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-      summary: create new user
-      tags:
-      - Users
-  /users/{id}:
+  /articles/{id}:
     delete:
-      description: Delete a user item by ID
-      operationId: delete-user-by-id
+      description: Delete a article by ID
+      operationId: delete-article-by-id
       parameters:
-      - description: userUUID
+      - description: articleID
         in: path
         name: id
         required: true
@@ -280,14 +247,14 @@ paths:
             items:
               type: string
             type: array
-      summary: delete a user item by ID
+      summary: delete a article by ID
       tags:
-      - Users
+      - Articles
     get:
-      description: Get a user by ID
-      operationId: get-user-by-id
+      description: Get an article by ID
+      operationId: get-article-by-id
       parameters:
-      - description: userUUID
+      - description: Article ID
         in: path
         name: id
         required: true
@@ -298,31 +265,31 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.UserResponse'
+            $ref: '#/definitions/models.ArticleResponse'
         "404":
           description: Not Found
           schema:
             items:
               type: string
             type: array
-      summary: get a user by ID
+      summary: get an article by ID
       tags:
-      - Users
+      - Articles
     put:
-      description: Update user by ID
-      operationId: delete-user-by-id
+      description: Update article by ID
+      operationId: delete-article-by-id
       parameters:
-      - description: userUUID
+      - description: articleID
         in: path
         name: id
         required: true
-        type: string
-      - description: Введите данные пользователя
+        type: integer
+      - description: Введите новые данные статьи
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/models.UpdateUserBody'
+          $ref: '#/definitions/models.UpdateArticleBody'
       produces:
       - application/json
       responses:
@@ -338,7 +305,7 @@ paths:
             items:
               type: string
             type: array
-      summary: update user by ID
+      summary: update article by ID
       tags:
-      - Users
+      - Articles
 swagger: "2.0"

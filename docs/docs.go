@@ -166,7 +166,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.UserResponse"
+                                "$ref": "#/definitions/models.ArticleResponse"
                             }
                         }
                     }
@@ -211,83 +211,21 @@ const docTemplate = `{
                 }
             }
         },
-        "/users": {
+        "/articles/{id}": {
             "get": {
-                "description": "Get all users from db",
+                "description": "Get an article by ID",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "Articles"
                 ],
-                "summary": "get all users",
-                "operationId": "get-all-users",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.UserResponse"
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Creating User in DB with given request body",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Users"
-                ],
-                "summary": "create new user",
-                "parameters": [
-                    {
-                        "description": "Введите данные пользователя",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CreateUserRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/users/{id}": {
-            "get": {
-                "description": "Get a user by ID",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Users"
-                ],
-                "summary": "get a user by ID",
-                "operationId": "get-user-by-id",
+                "summary": "get an article by ID",
+                "operationId": "get-article-by-id",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "userUUID",
+                        "description": "Article ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -297,7 +235,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.UserResponse"
+                            "$ref": "#/definitions/models.ArticleResponse"
                         }
                     },
                     "404": {
@@ -312,30 +250,30 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Update user by ID",
+                "description": "Update article by ID",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "Articles"
                 ],
-                "summary": "update user by ID",
-                "operationId": "delete-user-by-id",
+                "summary": "update article by ID",
+                "operationId": "delete-article-by-id",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "userUUID",
+                        "type": "integer",
+                        "description": "articleID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "Введите данные пользователя",
+                        "description": "Введите новые данные статьи",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.UpdateUserBody"
+                            "$ref": "#/definitions/models.UpdateArticleBody"
                         }
                     }
                 ],
@@ -361,19 +299,19 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "Delete a user item by ID",
+                "description": "Delete a article by ID",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "Articles"
                 ],
-                "summary": "delete a user item by ID",
-                "operationId": "delete-user-by-id",
+                "summary": "delete a article by ID",
+                "operationId": "delete-article-by-id",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "userUUID",
+                        "description": "articleID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -403,8 +341,35 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.ArticleResponse": {
+            "description": "Тело ответа после cоздания статьи",
+            "type": "object",
+            "required": [
+                "createdAt",
+                "email",
+                "name",
+                "updatedAt"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
         "models.CreateArticleRequest": {
-            "description": "Тело запроса для создания пользователя",
+            "description": "Тело запроса для создания статьи",
             "type": "object",
             "required": [
                 "content",
@@ -415,26 +380,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.CreateUserRequest": {
-            "description": "Тело запроса для создания пользователя",
-            "type": "object",
-            "required": [
-                "email",
-                "name",
-                "password"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "password": {
                     "type": "string"
                 }
             }
@@ -475,14 +420,18 @@ const docTemplate = `{
                 }
             }
         },
-        "models.UpdateUserBody": {
-            "description": "Тело запроса для обновления пользователя",
+        "models.UpdateArticleBody": {
+            "description": "Тело запроса для обновления статьи",
             "type": "object",
+            "required": [
+                "content",
+                "title"
+            ],
             "properties": {
-                "email": {
+                "content": {
                     "type": "string"
                 },
-                "firstName": {
+                "title": {
                     "type": "string"
                 }
             }

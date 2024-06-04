@@ -13,7 +13,7 @@ import (
 // Структура статьи
 type Article struct {
 	gorm.Model
-	ID        uint64    `gorm:"primary_key;auto_increment" json:"id"` // Уникальный идентификатор
+	ID        uint64    `gorm:"primary_key;auto_increment" json:"ID"` // Уникальный идентификатор
 	User      User      `json:"author"`                               // Автор статьи
 	UserID    uuid.UUID `gorm:"type:uuid;not null" json:"author_id"`  // Уникальный идентификатор автора статьи
 	Title     string    `gorm:"size:255;not null" json:"title"`       // Название статьи
@@ -24,18 +24,25 @@ type Article struct {
 }
 
 // CreateArticleRequest
-// @Description Тело запроса для создания пользователя
+// @Description Тело запроса для создания статьи
 type CreateArticleRequest struct {
 	Title   string `json:"title" validate:"required"`
 	Content string `json:"content" validate:"required"`
 }
 
 // UserResponse
-// @Description Тело ответа после cоздания пользователя
+// @Description Тело ответа после cоздания статьи
 type ArticleResponse struct {
 	ID        string    `json:"id"`
 	Name      string    `json:"name" validate:"required"`
 	Email     string    `json:"email" validate:"required"`
 	CreatedAt time.Time `json:"createdAt" validate:"required"`
 	UpdatedAt time.Time `json:"updatedAt" validate:"required"`
+}
+
+// UpdateArticleBody
+// @Description Тело запроса для обновления статьи
+type UpdateArticleBody struct {
+	Title   string `json:"title" validate:"required"`
+	Content string `json:"content" validate:"required"`
 }

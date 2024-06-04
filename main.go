@@ -66,16 +66,12 @@ func main() {
 	app.Get("/api/v1/current_user", controllers.GetCurrentUser)
 	app.Get("/api/v1/logout", controllers.Logout)
 
-	// User routes
-	app.Get("/users", controllers.GetAllUsers)
-	app.Post("/users", controllers.AddNewUser)
-	app.Get("/users/:id", controllers.GetUserById)
-	app.Put("/users/:id", controllers.UpdateUserById)
-	app.Delete("/users/:id", controllers.DeleteUserById)
-
 	// Article routes
-	app.Post("/articles", controllers.CreateMyArticle)
 	app.Get("/articles", controllers.GetAllArticles)
+	app.Post("/articles", controllers.CreateMyArticle)
+	app.Get("/articles/:id", controllers.GetArticleById)
+	app.Put("/articles/:id", controllers.UpdateMyArticleById)
+	app.Delete("/articles/:id", controllers.DeleteMyArticleById)
 
 	// Start Server and Listen on PORT 8080
 	if err := app.Listen(":8080"); err != nil {
