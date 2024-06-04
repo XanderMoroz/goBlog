@@ -29,3 +29,13 @@ type CreateArticleRequest struct {
 	Title   string `json:"title" validate:"required"`
 	Content string `json:"content" validate:"required"`
 }
+
+// UserResponse
+// @Description Тело ответа после cоздания пользователя
+type ArticleResponse struct {
+	ID        string    `json:"id"`
+	Name      string    `json:"name" validate:"required"`
+	Email     string    `json:"email" validate:"required"`
+	CreatedAt time.Time `json:"createdAt" validate:"required"`
+	UpdatedAt time.Time `json:"updatedAt" validate:"required"`
+}

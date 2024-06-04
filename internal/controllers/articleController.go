@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"log"
+	"net/http"
+
 	// "net/http"
 
 	"github.com/gofiber/fiber/v2"
@@ -125,4 +127,46 @@ func CreateArticleInDB() {
 	log.Printf("	Название: <%s>\n", newArticle.Title)
 	log.Printf("	Текст: <%s>\n", newArticle.Content)
 	log.Printf("	Автор: <%s>\n", newArticle.User.Name)
+}
+
+// @Summary		get all articles
+// @Description Get all articles from db
+// @Tags 		Articles
+// @ID			get-all-articles
+// @Produce		json
+// @Success		200		{object}	[]models.UserResponse
+// @Router		/articles [get]
+func GetAllArticles(c *fiber.Ctx) error {
+
+	// db := database.DB
+	// var articles []models.Article // users slice
+
+	// result := db.Find(&articles)
+
+	// if result.Error != nil {
+	// 	// handle error
+	// 	panic("failed to retrieve articles: " + result.Error.Error())
+	// }
+
+	// log.Println("Список статей — успешно извлечен:")
+	// for _, article := range articles {
+	// 	log.Printf("Article AuthorID: <%s> ID: %d, Title: %s, Content: %s\n", article.User.ID, article.ID, article.Title, article.Content)
+	// }
+	articles := utils.GetArticlesFromDB()
+
+	if len(articles) == 0 {
+		return c.Status(404).JSON(fiber.Map{
+			"status":  "error",
+			"message": "articles not found",
+			"data":    nil,
+		})
+	}
+
+	c.Status(http.StatusOK)
+	// return c.JSON(articleList)
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "Articles Found",
+		"data":    articles,
+	})
 }

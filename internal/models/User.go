@@ -43,7 +43,7 @@ type CreateUserRequest struct {
 	Password string `json:"password" validate:"required"`
 }
 
-// CreateUserRequest
+// UserResponse
 // @Description Тело ответа после cоздания пользователя
 type UserResponse struct {
 	ID        string    `json:"id"`
@@ -53,7 +53,7 @@ type UserResponse struct {
 	UpdatedAt time.Time `json:"updatedAt" validate:"required"`
 }
 
-// CreateUserRequest
+// UpdateUserBody
 // @Description Тело запроса для обновления пользователя
 type UpdateUserBody struct {
 	Name  string `json:"firstName"`

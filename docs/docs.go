@@ -150,6 +150,28 @@ const docTemplate = `{
             }
         },
         "/articles": {
+            "get": {
+                "description": "Get all articles from db",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "get all articles",
+                "operationId": "get-all-articles",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.UserResponse"
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Creating Article in DB with given request body",
                 "consumes": [

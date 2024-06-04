@@ -49,7 +49,7 @@ func main() {
 	app.Use(recover.New())
 	app.Use(cors.New())
 
-	// controllers.CreateArticleInDB()
+	// controllers.GetArticlesFromDB()
 
 	app.Get("/swagger/*", swagger.HandlerDefault) // default
 	app.Get("/", func(c *fiber.Ctx) error {
@@ -73,8 +73,9 @@ func main() {
 	app.Put("/users/:id", controllers.UpdateUserById)
 	app.Delete("/users/:id", controllers.DeleteUserById)
 
-	// User routes
+	// Article routes
 	app.Post("/articles", controllers.CreateMyArticle)
+	app.Get("/articles", controllers.GetAllArticles)
 
 	// Start Server and Listen on PORT 8080
 	if err := app.Listen(":8080"); err != nil {
