@@ -117,14 +117,9 @@ func AddArticleToCategory(c *fiber.Ctx) error {
 	log.Println("Запрос успешно обработан обработан")
 
 	article := utils.GetArticleByIDFromDB(body.ArticleID)
-	// newCategory := models.Category{
-	// 	Title: body.Title,
-	// }
 
 	category := utils.GetCategoryByNameFromDB(body.CategoryName)
-	// ... Создаем новую категорию...
 
-	// result := db.Create(&newCategory)
 	db.Model(&category).Association("Articles").Append(&article)
 	db.Model(&article).Association("Categories").Append(&category)
 

@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -11,13 +12,15 @@ import (
 
 func GenerateToken(userID uuid.UUID) (string, error) {
 
+	api_secret := os.Getenv("API_SECRET")
+
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": userID,
 		"exp": time.Now().Add(time.Hour * 24).Unix(), // Expires in 24 hours
 	})
 
 	// Replace "SomeAppSecret" with your actual secret key
-	secretKey := []byte("SomeAppSecret")
+	secretKey := []byte(api_secret)
 	token, err := claims.SignedString(secretKey)
 	if err != nil {
 		return "", fmt.Errorf("failed to generate token: %v", err)
@@ -28,8 +31,8 @@ func GenerateToken(userID uuid.UUID) (string, error) {
 
 func ParseUserIDFromJWTToken(cookieWithJWT string) (string, error) {
 
-	hmacSecretString := "SomeAppSecret"
-	hmacSecret := []byte(hmacSecretString)
+	api_secret := os.Getenv("API_SECRET")
+	hmacSecret := []byte(api_secret)
 
 	token, err := jwt.Parse(cookieWithJWT, func(token *jwt.Token) (interface{}, error) {
 		// Проверяем метод подписи токена и другие параметры

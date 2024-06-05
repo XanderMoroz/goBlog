@@ -52,30 +52,3 @@ func GetCategoryByNameFromDB(name string) models.Category {
 
 	return category
 }
-
-// // Извлекаем категорию по названию
-// func AddArticleToCategoryInDB() models.Category {
-
-// 	name := "Business"
-// 	db := database.DB
-// 	var category models.Category // category slice
-
-// 	// Retrieve the record you want to update
-// 	// result := db.First(&article, "ID = ?", id)
-// 	result := db.Model(&category).Association("Languages").Append(&Language{Name: "DE"})
-
-// 	if result.Error != nil {
-// 		// handle error
-// 		panic("failed to retrieve category: " + result.Error.Error())
-// 	}
-
-// 	if category.ID == 0 {
-// 		// handle error
-// 		panic("failed to retrieve category: " + result.Error.Error())
-// 	}
-
-// 	log.Println("Категория — успешно извлечена:")
-// 	log.Printf("Category ID: <%d>, Title: <%s>\n", category.ID, category.Title)
-
-// 	return category
-// }

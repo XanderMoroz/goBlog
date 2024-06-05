@@ -247,30 +247,14 @@ func DeleteMyArticleById(c *fiber.Ctx) error {
 		log.Println("USER_ID из токена:", userID)
 	}
 
-	var user models.User
 	log.Println("Извлекаем пользователя по ID...")
-	result := db.Where("ID =?", userID).First(&user)
-
-	if result.Error != nil {
-		panic("failed to retrieve user: " + result.Error.Error())
-	} else {
-		log.Println("Пользователь — успешно извлечен:")
-		log.Printf("	ID: <%s>\n", user.ID)
-		log.Printf("	Имя: <%s>\n", user.Name)
-		log.Printf("	E-mail: <%s>\n", user.Email)
-	}
+	user := utils.GetUserByIDFromDB(userID)
 
 	// Извлекаем параметр articleID
-	id := c.Params("id")
-
-	var article models.Article
+	articleID := c.Params("id")
 
 	// Извлекаем статью по ID
-	result = db.First(&article, "ID = ?", id)
-
-	if result.Error != nil {
-		panic("failed to retrieve user: " + result.Error.Error())
-	}
+	article := utils.GetArticleByIDFromDB(articleID)
 
 	// Если статья не найдена
 	if article.ID == 0 {
@@ -291,7 +275,7 @@ func DeleteMyArticleById(c *fiber.Ctx) error {
 	}
 
 	// Удаляем статью по ID (с извлечением ошибки)
-	err = db.Delete(&article, "ID = ?", id).Error
+	err = db.Delete(&article, "ID = ?", articleID).Error
 
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{
