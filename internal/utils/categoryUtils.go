@@ -15,9 +15,6 @@ func GetCategoriesFromDB() []models.Category {
 
 	result := db.Find(&categories)
 
-	// 	var languages []Language
-	//   err := db.Model(&Language{}).Preload("Users").Find(&languages).Error
-
 	if result.Error != nil {
 		// handle error
 		panic("failed to retrieve articles: " + result.Error.Error())

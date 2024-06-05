@@ -410,4 +410,30 @@ paths:
       summary: add article to category
       tags:
       - Categories
+  /categories/remove_article:
+    post:
+      consumes:
+      - application/json
+      description: Deleting Article from Category in DB with given request body
+      parameters:
+      - description: Введите ID статьи и название категории
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddArticleToCategoryBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: delete article from category
+      tags:
+      - Categories
 swagger: "2.0"

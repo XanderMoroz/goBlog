@@ -57,7 +57,7 @@ func GetArticleById(c *fiber.Ctx) error {
 
 	// Retrieve the record you want to update
 	// result := db.First(&article, "ID = ?", id)
-	result := db.Preload("User").First(&article, "ID = ?", id)
+	result := db.Preload("User").Preload("Categories").First(&article, "ID = ?", id)
 
 	if result.Error != nil {
 		panic("failed to retrieve article: " + result.Error.Error())

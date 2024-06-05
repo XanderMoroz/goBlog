@@ -77,7 +77,7 @@ func Connect() {
 	DB = db
 
 	log.Printf("Устанавливаем миграции в БД...")
-	db.AutoMigrate(&models.User{}, &models.Article{}, &models.Category{})
+	db.AutoMigrate(&models.User{}, &models.Article{}, &models.Category{}, &models.Comment{})
 	if err != nil {
 		panic("failed to perform migrations: " + err.Error())
 	}

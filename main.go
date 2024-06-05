@@ -77,7 +77,8 @@ func main() {
 	// Category routes
 	app.Post("/categories", controllers.CreateNewCategory)
 	app.Get("/categories", controllers.GetAllCategories)
-	app.Post("/categories/add_article", controllers.AddArticleToCategoryCategory)
+	app.Post("/categories/add_article", controllers.AddArticleToCategory)
+	app.Post("/categories/remove_article", controllers.DeleteArticleFromCategory)
 
 	// Start Server and Listen on PORT 8080
 	if err := app.Listen(":8080"); err != nil {

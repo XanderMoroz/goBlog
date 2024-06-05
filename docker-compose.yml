@@ -16,7 +16,7 @@ services:
 
   go_blog-postgres:
     container_name: go_blog_postgres                            # Название контейнера
-    image: postgres:15                                          # Название:версия образа
+    image: postgres:15                                          # Название:версия образа (postgres:15.7-alpine)
     environment:                                                # Берем из .env
       - POSTGRES_USER=${DB_USER}  
       - POSTGRES_PASSWORD=${DB_PASSWORD}
