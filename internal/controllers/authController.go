@@ -189,7 +189,7 @@ func Login(c *fiber.Ctx) error {
 func GetCurrentUser(c *fiber.Ctx) error {
 	log.Println("Получен запрос на извлечение авторизованного пользователя")
 
-	db := database.DB
+	// db := database.DB
 
 	// Извлекаем JWT токен из куки пользователя
 	cookieWithJWT := c.Cookies("jwt")
@@ -207,19 +207,8 @@ func GetCurrentUser(c *fiber.Ctx) error {
 		log.Println("USER_ID из токена:", userID)
 	}
 
-	var user models.User
 	log.Println("Извлекаем пользователя по ID...")
-	// result := db.Where("ID =?", claims["sub"]).First(&user)
-	result := db.Where("ID =?", userID).First(&user)
-
-	if result.Error != nil {
-		panic("failed to retrieve user: " + result.Error.Error())
-	} else {
-		log.Println("Пользователь — успешно извлечен:")
-		log.Printf("	ID: <%s>\n", user.ID)
-		log.Printf("	Имя: <%s>\n", user.Name)
-		log.Printf("	E-mail: <%s>\n", user.Email)
-	}
+	user := utils.GetUserByIDFromDB(userID)
 
 	// Возвращаем данные пользователя
 	return c.JSON(fiber.Map{

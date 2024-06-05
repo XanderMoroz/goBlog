@@ -31,7 +31,7 @@ func GetArticlesFromDB() []models.Article {
 func GetArticleByIDFromDB(articleID string) models.Article {
 
 	db := database.DB
-	var article models.Article // article slice
+	var article models.Article
 
 	// Извлекаем статью вместе с автором и категориями
 	result := db.Preload("Categories").Preload("User").First(&article, "ID = ?", articleID)
@@ -44,52 +44,35 @@ func GetArticleByIDFromDB(articleID string) models.Article {
 	if article.ID == 0 {
 		// handle error
 		panic("failed to retrieve article: " + result.Error.Error())
+	} else {
+		// handle success
+		log.Println("Cтатья — успешно извлечена:")
+		log.Printf("	ID: <%d>\n", article.ID)
+		log.Printf("	Название: <%s>\n", article.Title)
+		log.Printf("	Содержание: <%s>\n", article.Content)
+		log.Printf("	Автор: <%s>\n", article.User.Name)
+		log.Printf("	Категории: <%v>\n", article.Categories)
 	}
-
-	log.Println("Cтатья — успешно извлечена:")
-	log.Printf("	ID: <%d>\n", article.ID)
-	log.Printf("	Название: <%s>\n", article.Title)
-	log.Printf("	Содержание: <%s>\n", article.Content)
-	log.Printf("	Автор: <%s>\n", article.User.Name)
-	log.Printf("	Категории: <%v>\n", article.Categories)
 
 	return article
 }
 
 // Создаем новую статью
-func CreateArticleInDB() {
+func CreateArticleInDB(newArticle models.Article) models.Article {
 
 	db := database.DB
 
-	var user models.User
-
-	// Retrieve the record you want to update
-	result := db.First(&user, "ID = ?", "31e5665a-6930-4fda-97e0-ed24d3a561a6")
-	if result.Error != nil {
-		panic("failed to retrieve user: " + result.Error.Error())
-	}
-	// iterate over the users slice and print the details of each user
-	log.Println("Пользователь — успешно извлечен:")
-	log.Printf("	ID: <%s>\n", user.ID)
-	log.Printf("	Имя: <%s>\n", user.Name)
-	log.Printf("	E-mail: <%s>\n", user.Email)
-
-	newArticle := models.Article{
-		Title:   "Jane",
-		Content: "Doe",
-		User:    user,
-		UserID:  user.ID,
-	}
-
-	// ... Create a new user record...
-	result = db.Create(&newArticle)
+	// ... Create a new article record...
+	result := db.Create(&newArticle)
 	if result.Error != nil {
 		panic("failed to create article: " + result.Error.Error())
+	} else {
+		// ... Handle successful creation ...
+		log.Println("Новая статья — успешно создана:")
+		log.Printf("	ID: <%d>\n", newArticle.ID)
+		log.Printf("	Название: <%s>\n", newArticle.Title)
+		log.Printf("	Текст: <%s>\n", newArticle.Content)
+		log.Printf("	Автор: <%s>\n", newArticle.User.Name)
 	}
-	// ... Handle successful creation ...
-	log.Println("Новая статья — успешно создана:")
-	log.Printf("	ID: <%d>\n", newArticle.ID)
-	log.Printf("	Название: <%s>\n", newArticle.Title)
-	log.Printf("	Текст: <%s>\n", newArticle.Content)
-	log.Printf("	Автор: <%s>\n", newArticle.User.Name)
+	return newArticle
 }

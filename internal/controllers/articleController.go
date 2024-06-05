@@ -49,33 +49,10 @@ func GetAllArticles(c *fiber.Ctx) error {
 // @Router		/articles/{id} 	[get]
 func GetArticleById(c *fiber.Ctx) error {
 
-	db := database.DB
-	var article models.Article
+	// Read the param id
+	articleID := c.Params("id")
 
-	// Read the param userUUID
-	id := c.Params("id")
-
-	// Retrieve the record you want to update
-	// result := db.First(&article, "ID = ?", id)
-	result := db.Preload("User").Preload("Categories").First(&article, "ID = ?", id)
-
-	if result.Error != nil {
-		panic("failed to retrieve article: " + result.Error.Error())
-	}
-
-	// If no such note present return an error
-	if article.ID == 0 {
-		return c.Status(404).JSON(fiber.Map{
-			"status":  "error",
-			"message": "Article not found",
-			"data":    nil,
-		})
-	}
-
-	log.Println("Пользователь — успешно извлечен:")
-	log.Printf("	ID: <%d>\n", article.ID)
-	log.Printf("	Имя: <%s>\n", article.Title)
-	log.Printf("	E-mail: <%s>\n", article.Content)
+	article := utils.GetArticleByIDFromDB(articleID)
 
 	// Return the note with the Id
 	return c.JSON(fiber.Map{
@@ -95,8 +72,6 @@ func GetArticleById(c *fiber.Ctx) error {
 // @Failure        400              {string}    string    "Bad Request"
 // @Router         /articles 			[post]
 func CreateMyArticle(c *fiber.Ctx) error {
-
-	db := database.DB
 
 	body := new(models.CreateArticleRequest)
 
@@ -128,18 +103,8 @@ func CreateMyArticle(c *fiber.Ctx) error {
 		log.Println("USER_ID из токена:", userID)
 	}
 
-	var user models.User
 	log.Println("Извлекаем пользователя по ID...")
-	result := db.Where("ID =?", userID).First(&user)
-
-	if result.Error != nil {
-		panic("failed to retrieve user: " + result.Error.Error())
-	} else {
-		log.Println("Пользователь — успешно извлечен:")
-		log.Printf("	ID: <%s>\n", user.ID)
-		log.Printf("	Имя: <%s>\n", user.Name)
-		log.Printf("	E-mail: <%s>\n", user.Email)
-	}
+	user := utils.GetUserByIDFromDB(userID)
 
 	newArticle := models.Article{
 		Title:   body.Title,
@@ -149,18 +114,7 @@ func CreateMyArticle(c *fiber.Ctx) error {
 	}
 
 	// ... Создаем новую статью...
-	result = db.Create(&newArticle)
-	if result.Error != nil {
-		// ... В случае ошибки ...
-		panic("failed to create article: " + result.Error.Error())
-	} else {
-		// ... В случае успеха ...
-		log.Println("Новая статья — успешно создана:")
-		log.Printf("	ID: <%d>\n", newArticle.ID)
-		log.Printf("	Название: <%s>\n", newArticle.Title)
-		log.Printf("	Текст: <%s>\n", newArticle.Content)
-		log.Printf("	Автор: <%s>\n", newArticle.User.Name)
-	}
+	utils.CreateArticleInDB(newArticle)
 
 	// Возвращаем статью
 	return c.JSON(fiber.Map{
@@ -201,31 +155,15 @@ func UpdateMyArticleById(c *fiber.Ctx) error {
 		log.Println("USER_ID из токена:", userID)
 	}
 
-	var user models.User
 	log.Println("Извлекаем пользователя по ID...")
-	result := db.Where("ID =?", userID).First(&user)
-
-	if result.Error != nil {
-		panic("failed to retrieve user: " + result.Error.Error())
-	} else {
-		log.Println("Пользователь — успешно извлечен:")
-		log.Printf("	ID: <%s>\n", user.ID)
-		log.Printf("	Имя: <%s>\n", user.Name)
-		log.Printf("	E-mail: <%s>\n", user.Email)
-	}
+	user := utils.GetUserByIDFromDB(userID)
 
 	// Read the param articleID
-	id := c.Params("id")
+	articleID := c.Params("id")
 
-	var article models.Article
-	// Извлекаем запись по ID
-	result = db.First(&article, "ID = ?", id)
+	article := utils.GetArticleByIDFromDB(articleID)
 
-	if result.Error != nil {
-		panic("failed to retrieve article: " + result.Error.Error())
-	}
-
-	// If no such note present return an error
+	// Если статьи нет возвращаем ошибку
 	if article.ID == 0 {
 		return c.Status(404).JSON(fiber.Map{
 			"status":  "error",
@@ -263,7 +201,7 @@ func UpdateMyArticleById(c *fiber.Ctx) error {
 	article.Content = body.Content
 
 	// Сохраняем изменения в БД
-	result = db.Save(&article)
+	result := db.Save(&article)
 	if result.Error != nil {
 		panic("failed to update article: " + result.Error.Error())
 	}
