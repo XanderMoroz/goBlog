@@ -26,19 +26,39 @@ Go Blog - готовая основа для быстрой сборки backend
 
 | Method                         | HTTP request           | Description                          |
 | ------------------------------ | ---------------------- | ------------------------------------ |
-| [**add a new item**]           | **POST** /users        | Добавление нового пользователя       |
-| [**get a article item by ID**] | **GET** /users/{id}    | Извлечение пользователя по ID        |
-| [**get all items**]            | **GET** /users         | Извлечение списка всех пользователей |
-| [**delete item**]              | **DELETE** /users/{id} | Удаление пользователя по ID          |
+| [**add a new item**]           | **POST** /api/v1/register        | Добавление нового пользователя       |
+| [**get a article item by ID**] | **GET** /api/v1/login    | Извлечение пользователя по ID        |
+| [**get all items**]            | **GET** /api/v1/current_user         | Извлечение списка всех пользователей |
+| [**delete item**]              | **DELETE** /api/v1/logout | Удаление пользователя по ID          |
+
+
+app.Post("/api/v1/register", controllers.Register)
+	app.Post("/api/v1/login", controllers.Login)
+	app.Get("/api/v1/current_user", controllers.GetCurrentUser)
+	app.Get("/api/v1/logout", controllers.Logout)
+
+	// Category routes
+	app.Post("/categories", controllers.CreateNewCategory)
+	app.Get("/categories", controllers.GetAllCategories)
+	app.Post("/categories/add_article", controllers.AddArticleToCategory)
+	app.Post("/categories/remove_article", controllers.DeleteArticleFromCategory)
+
+	// Article routes
+	app.Get("/articles", controllers.GetAllArticles)
+	app.Post("/articles", controllers.CreateMyArticle)
+	app.Get("/articles/:id", controllers.GetArticleById)
+	app.Put("/articles/:id", controllers.UpdateMyArticleById)
+	app.Delete("/articles/:id", controllers.DeleteMyArticleById)
+
+
 
 ## <a name="database_scheme"> 💾 База данных </a>
 
 База данных содержит 6 моделей: 
-**Автор публикации** (Author), 
+**Автор публикации** (User), 
 **Категория статьи** (Category), 
-**Cтатья** (Post),
-**Статья в категории** (PostCategory), 
-**Подписчик на категорию** (UserCategory), 
+**Cтатья** (Article),
+**Статья в категории** (ArticleCategory), 
 **Комментарий** (Comment)
 
 
@@ -52,7 +72,7 @@ Go Blog - готовая основа для быстрой сборки backend
 <details>
 <summary>ДЕТАЛЬНАЯ СХЕМА БАЗЫ ДАННЫХ</summary>
 
-![Screen Shot](extras/erd.png)
+![Screen Shot](docs/extras/erd.jpg)
 
 </details>
 
