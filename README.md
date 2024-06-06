@@ -26,29 +26,21 @@ Go Blog - готовая основа для быстрой сборки backend
 
 | Method                         | HTTP request           | Description                          |
 | ------------------------------ | ---------------------- | ------------------------------------ |
-| [**add a new item**]           | **POST** /api/v1/register        | Добавление нового пользователя       |
-| [**get a article item by ID**] | **GET** /api/v1/login    | Извлечение пользователя по ID        |
-| [**get all items**]            | **GET** /api/v1/current_user         | Извлечение списка всех пользователей |
-| [**delete item**]              | **DELETE** /api/v1/logout | Удаление пользователя по ID          |
+| [**Register**]           | **POST** /api/v1/register        | Регистрация нового пользователя       |
+| [**Login**] | **POST** /api/v1/login    | Авторизация пользователя про логину и паролю        |
+| [**GetCurrentUser**]            | **GET** /api/v1/current_user         | Извлечение авторизованного пользователя по токену |
+| [**Logout**]              | **GET** /api/v1/logout | Разлогиниться          |
+| [**CreateNewCategory**]              | **POST** /categories | Создать новую категорию          |
+| [**GetAllCategories**]              | **GET** /categories | Извлечь все категории          |
+| [**AddArticleToCategory**]              | **POST** /categories/add_article | Добавить статью в категорию          |
+| [**DeleteArticleFromCategory**]              | **POST** /categories/remove_article | Удалить статью из категории           |
+| [**GetAllArticles**]              | **POST** /articles | Извлечь все статьи          |
+| [**CreateMyArticle**]              | **POST** /articles | Создать новую статью          |
+| [**GetArticleById**]              | **GET** /articles/:id | Извлечь статью по ID          |
+| [**UpdateMyArticleById**]              | **PUT** /articles/:id | Обновить статью (только для авторов)          |
+| [**DeleteMyArticleById**]              | **DELETE** /articles/:id | Удалить статью (только для авторов)          |
+| [**AddNewCommentToArticle**]              | **POST** /article/{id}/add_comment | Добавить комментарий к статье          |
 
-
-app.Post("/api/v1/register", controllers.Register)
-	app.Post("/api/v1/login", controllers.Login)
-	app.Get("/api/v1/current_user", controllers.GetCurrentUser)
-	app.Get("/api/v1/logout", controllers.Logout)
-
-	// Category routes
-	app.Post("/categories", controllers.CreateNewCategory)
-	app.Get("/categories", controllers.GetAllCategories)
-	app.Post("/categories/add_article", controllers.AddArticleToCategory)
-	app.Post("/categories/remove_article", controllers.DeleteArticleFromCategory)
-
-	// Article routes
-	app.Get("/articles", controllers.GetAllArticles)
-	app.Post("/articles", controllers.CreateMyArticle)
-	app.Get("/articles/:id", controllers.GetArticleById)
-	app.Put("/articles/:id", controllers.UpdateMyArticleById)
-	app.Delete("/articles/:id", controllers.DeleteMyArticleById)
 
 
 
