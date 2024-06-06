@@ -13,7 +13,7 @@ func GetArticlesFromDB() []models.Article {
 	db := database.DB
 	var articles []models.Article // article slice
 
-	result := db.Preload("Categories").Preload("User").Find(&articles)
+	result := db.Preload("Categories").Preload("Comments").Preload("User").Find(&articles)
 
 	if result.Error != nil {
 		// handle error
@@ -34,7 +34,7 @@ func GetArticleByIDFromDB(articleID string) models.Article {
 	var article models.Article
 
 	// Извлекаем статью вместе с автором и категориями
-	result := db.Preload("Categories").Preload("User").First(&article, "ID = ?", articleID)
+	result := db.Preload("Categories").Preload("Comments").Preload("User").First(&article, "ID = ?", articleID)
 
 	if result.Error != nil {
 		// handle error

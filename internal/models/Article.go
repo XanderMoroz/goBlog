@@ -20,6 +20,7 @@ type Article struct {
 	DeletedAt gorm.DeletedAt
 	// Категории к которым принадлежит статья
 	Categories []*Category `gorm:"many2many:article_categories;"`
+	Comments   []Comment   `gorm:"foreignKey:ArticleID"`
 }
 
 // CreateArticleRequest

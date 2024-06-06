@@ -64,6 +64,14 @@ definitions:
     required:
     - title
     type: object
+  models.CreateCommentRequest:
+    description: Тело запроса для создания статьи
+    properties:
+      content:
+        type: string
+    required:
+    - content
+    type: object
   models.LoginRequest:
     description: Тело запроса для аутентификации пользователя
     properties:
@@ -216,6 +224,37 @@ paths:
       summary: user registration
       tags:
       - Authentication
+  /article/{id}/add_comment:
+    post:
+      consumes:
+      - application/json
+      description: Creating new Comment to Article in DB with given request body
+      parameters:
+      - description: Article ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Введите текст комментария
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: create new comment to article
+      tags:
+      - Articles
   /articles:
     get:
       description: Get all articles from db

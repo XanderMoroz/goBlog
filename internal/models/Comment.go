@@ -21,5 +21,11 @@ type Comment struct {
 	UserID uuid.UUID `gorm:"type:uuid;not null" json:"author_id"`
 	// Прокоментированная статья
 	Article   Article `json:"article"`
-	ArticleID uint64  `gorm:"type:uuid;not null" json:"article_id"`
+	ArticleID uint64  `gorm:"type:uint64;not null" json:"article_id"`
+}
+
+// CreateCommentRequest
+// @Description Тело запроса для создания статьи
+type CreateCommentRequest struct {
+	Content string `json:"content" validate:"required"`
 }

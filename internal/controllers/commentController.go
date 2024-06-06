@@ -11,20 +11,21 @@ import (
 	"github.com/XanderMoroz/goBlog/internal/utils"
 )
 
-// @Summary        create new article
-// @Description    Creating Article in DB with given request body
-// @Tags           Articles
-// @Accept         json
-// @Produce        json
-// @Param          request         	body        models.CreateArticleRequest    true    "Введите данные статьи"
-// @Success        201              {string}    string
-// @Failure        400              {string}    string    "Bad Request"
-// @Router         /comment 			[post]
-func CreateNewCommentToArticle(c *fiber.Ctx) error {
+// @Summary        	create new comment to article
+// @Description    	Creating new Comment to Article in DB with given request body
+// @Tags           	Articles
+// @Accept         	json
+// @Produce        	json
+// @Param			id								path		string							true	"Article ID"
+// @Param          	request         				body        models.CreateCommentRequest    	true    "Введите текст комментария"
+// @Success       	201              				{string}    string
+// @Failure        	400              				{string}    string    						"Bad Request"
+// @Router         	/article/{id}/add_comment 		[post]
+func AddNewCommentToArticle(c *fiber.Ctx) error {
 
 	db := database.DB
 
-	body := new(models.CreateArticleRequest)
+	body := new(models.CreateCommentRequest)
 
 	// Извлекаем тело запроса
 	err := c.BodyParser(body)
@@ -54,44 +55,51 @@ func CreateNewCommentToArticle(c *fiber.Ctx) error {
 		log.Println("USER_ID из токена:", userID)
 	}
 
-	var user models.User
+	// var user models.User
 	log.Println("Извлекаем пользователя по ID...")
-	result := db.Where("ID =?", userID).First(&user)
+	user := utils.GetUserByIDFromDB(userID)
 
-	if result.Error != nil {
-		panic("failed to retrieve user: " + result.Error.Error())
-	} else {
-		log.Println("Пользователь — успешно извлечен:")
-		log.Printf("	ID: <%s>\n", user.ID)
-		log.Printf("	Имя: <%s>\n", user.Name)
-		log.Printf("	E-mail: <%s>\n", user.Email)
+	// Read the param id
+	articleID := c.Params("id")
+
+	article := utils.GetArticleByIDFromDB(articleID)
+	// result := db.Where("ID =?", userID).First(&user)
+
+	// if result.Error != nil {
+	// 	panic("failed to retrieve user: " + result.Error.Error())
+	// } else {
+	// 	log.Println("Пользователь — успешно извлечен:")
+	// 	log.Printf("	ID: <%s>\n", user.ID)
+	// 	log.Printf("	Имя: <%s>\n", user.Name)
+	// 	log.Printf("	E-mail: <%s>\n", user.Email)
+	// }
+
+	newComment := models.Comment{
+		Content:   body.Content,
+		User:      user,
+		UserID:    user.ID,
+		Article:   article,
+		ArticleID: article.ID,
 	}
 
-	newArticle := models.Article{
-		Title:   body.Title,
-		Content: body.Content,
-		User:    user,
-		UserID:  user.ID,
-	}
-
-	// ... Создаем новую статью...
-	result = db.Create(&newArticle)
+	// ... Создаем новый комментарий...
+	result := db.Create(&newComment)
 	if result.Error != nil {
 		// ... В случае ошибки ...
 		panic("failed to create article: " + result.Error.Error())
 	} else {
 		// ... В случае успеха ...
-		log.Println("Новая статья — успешно создана:")
-		log.Printf("	ID: <%d>\n", newArticle.ID)
-		log.Printf("	Название: <%s>\n", newArticle.Title)
-		log.Printf("	Текст: <%s>\n", newArticle.Content)
-		log.Printf("	Автор: <%s>\n", newArticle.User.Name)
+		log.Println("Новый комментарий — успешно создан:")
+		log.Printf("	ID: <%d>\n", newComment.ID)
+		log.Printf("	Текст: <%s>\n", newComment.Content)
+		log.Printf("	Имя автора: <%s>\n", newComment.User.Name)
+		log.Printf("	Статья ID: <%d>\n", newComment.Article.ID)
 	}
 
 	// Возвращаем статью
 	return c.JSON(fiber.Map{
 		"status":  "success",
 		"message": "Article Created",
-		"data":    newArticle,
+		"data":    newComment,
 	})
 }

@@ -49,9 +49,6 @@ func main() {
 	app.Use(recover.New())
 	app.Use(cors.New())
 
-	// utils.GetCategoryByNameFromDB()
-	// utils.GetArticleByIDFromDB()
-
 	app.Get("/swagger/*", swagger.HandlerDefault) // default
 	app.Get("/", func(c *fiber.Ctx) error {
 		err := c.Status(200).JSON(fiber.Map{
@@ -67,6 +64,12 @@ func main() {
 	app.Get("/api/v1/current_user", controllers.GetCurrentUser)
 	app.Get("/api/v1/logout", controllers.Logout)
 
+	// Category routes
+	app.Post("/categories", controllers.CreateNewCategory)
+	app.Get("/categories", controllers.GetAllCategories)
+	app.Post("/categories/add_article", controllers.AddArticleToCategory)
+	app.Post("/categories/remove_article", controllers.DeleteArticleFromCategory)
+
 	// Article routes
 	app.Get("/articles", controllers.GetAllArticles)
 	app.Post("/articles", controllers.CreateMyArticle)
@@ -74,11 +77,8 @@ func main() {
 	app.Put("/articles/:id", controllers.UpdateMyArticleById)
 	app.Delete("/articles/:id", controllers.DeleteMyArticleById)
 
-	// Category routes
-	app.Post("/categories", controllers.CreateNewCategory)
-	app.Get("/categories", controllers.GetAllCategories)
-	app.Post("/categories/add_article", controllers.AddArticleToCategory)
-	app.Post("/categories/remove_article", controllers.DeleteArticleFromCategory)
+	// Comment routes
+	app.Post("/article/{id}/add_comment", controllers.AddNewCommentToArticle)
 
 	// Start Server and Listen on PORT 8080
 	if err := app.Listen(":8080"); err != nil {
