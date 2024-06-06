@@ -26,20 +26,20 @@ Go Blog - готовая основа для быстрой сборки backend
 
 | Method                         | HTTP request           | Description                          |
 | ------------------------------ | ---------------------- | ------------------------------------ |
-| [**Register**]           | **POST** /api/v1/register        | Регистрация нового пользователя       |
-| [**Login**] | **POST** /api/v1/login    | Авторизация пользователя про логину и паролю        |
-| [**GetCurrentUser**]            | **GET** /api/v1/current_user         | Извлечение авторизованного пользователя по токену |
-| [**Logout**]              | **GET** /api/v1/logout | Разлогиниться          |
-| [**CreateNewCategory**]              | **POST** /categories | Создать новую категорию          |
-| [**GetAllCategories**]              | **GET** /categories | Извлечь все категории          |
-| [**AddArticleToCategory**]              | **POST** /categories/add_article | Добавить статью в категорию          |
-| [**DeleteArticleFromCategory**]              | **POST** /categories/remove_article | Удалить статью из категории           |
-| [**GetAllArticles**]              | **POST** /articles | Извлечь все статьи          |
-| [**CreateMyArticle**]              | **POST** /articles | Создать новую статью          |
-| [**GetArticleById**]              | **GET** /articles/:id | Извлечь статью по ID          |
-| [**UpdateMyArticleById**]              | **PUT** /articles/:id | Обновить статью (только для авторов)          |
-| [**DeleteMyArticleById**]              | **DELETE** /articles/:id | Удалить статью (только для авторов)          |
-| [**AddNewCommentToArticle**]              | **POST** /article/{id}/add_comment | Добавить комментарий к статье          |
+| [**POST**]           |  /api/v1/register        | Регистрация нового пользователя       |
+| [**POST**] |  /api/v1/login    | Авторизация пользователя про логину и паролю        |
+| [**GET**]            |  /api/v1/current_user         | Извлечение авторизованного пользователя по токену |
+| [**GET**]              |  /api/v1/logout | Разлогиниться          |
+| [**POST**]              |  /categories | Создать новую категорию          |
+| [**GET**]              |  /categories | Извлечь все категории          |
+| [**POST**]              |  /categories/add_article | Добавить статью в категорию          |
+| [**POST**]              |  /categories/remove_article | Удалить статью из категории           |
+| [**POST**]              |  /articles | Извлечь все статьи          |
+| [**POST**]              |  /articles | Создать новую статью          |
+| [**GET**]              |  /articles/:id | Извлечь статью по ID          |
+| [**PUT**]              |  /articles/:id | Обновить статью (только для авторов)          |
+| [**DELETE**]              |  /articles/:id | Удалить статью (только для авторов)          |
+| [**POST**]              |  /article/{id}/add_comment | Добавить комментарий к статье          |
 
 
 
