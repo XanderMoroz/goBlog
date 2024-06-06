@@ -10,8 +10,6 @@ import (
 	"github.com/XanderMoroz/goBlog/database"
 	"github.com/XanderMoroz/goBlog/internal/controllers"
 
-	// "github.com/XanderMoroz/goBlog/internal/middlewares"
-
 	"github.com/gofiber/swagger"
 
 	_ "github.com/XanderMoroz/goBlog/docs"
