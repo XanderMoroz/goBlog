@@ -38,7 +38,6 @@ Go Blog - готовая основа для быстрой сборки backend
 | Method | HTTP request | Description |
 
 | ------------- | ----------------------------- | ------------------------------------------------- |
-
 | [**POST**] | /api/v1/register | Регистрация нового пользователя |
 | [**POST**] | /api/v1/login | Авторизация пользователя про логину и паролю |
 | [**GET**] | /api/v1/current_user | Извлечение авторизованного пользователя по токену |
@@ -157,17 +156,19 @@ sudo docker-compose up --build
 
 2.3 Сервисы доступны для эксплуатации:
 
-- Fiber APP: http://127.0.0.1:8080/
-- Swagger: http://127.0.0.1:8080/swagger/index.html
-- PGAdmin4: http://127.0.0.1:5050
-- Prometheus: http://127.0.0.1:9090
-- Grafana: http://127.0.0.1:3000
+- Приложение Go `Fiber APP`: http://127.0.0.1:8080/                  
+- API + Документация `Swagger`: http://127.0.0.1:8080/swagger/index.html  
+- Интерфейс для управления БД Postgres `PGAdmin4`: http://127.0.0.1:5050                    
+- Система мониторинга (сбора метрик) `Prometheus`: http://127.0.0.1:9090                  
+- Извлекает метрики хоста (cpu-, memory-usage) для мониторинга `Node Exporter`: http://127.0.0.1:9100/              
+- Аналитическая система (визиализирует данные в виде дашбордов) `Grafana`: http://127.0.0.1:3000                     
 
 
 3. ### Дополнительные настройки 
 
 <details>
 <summary>Как подключить PGAdmin4 к БД? </summary>
+
 
 1. Заходим в браузер по адресу http://127.0.0.1:5050 и вводим данные из .env
 
@@ -176,81 +177,86 @@ PGADMIN_DEFAULT_EMAIL=guest@admin.com
 PGADMIN_DEFAULT_PASSWORD=pwd123
 ```
 Картинка
-  
+
+2. Заполняем Имя сервера (обязательно) 
+
+Картинка
+
+3. Извлекаем адрес хоста, на котором расположилась БД Postgres
+
+```bash
+sudo docker inspect go_blog_postgres | grep IPAddress
+```
+картинка
+
+4. Заполняем Адрес сервера данными хоста БД Postgres и пароль (из файла .env)
+   картинка
+5. Готово
+   картинка
 
 </details>
 
 
-
-5. Авто-генерация документации swagger
-
-3.1 Как подключить PGAdmin4 к БД
+<details>
+<summary>Как подключить Grafana к Prometheus? </summary>
 
 
+1. Заходим в браузер по адресу http://127.0.0.1:3000 и вводим данные по умолчанию:
+
+  - Email or username: admin
+  - Password: admin
+
+После система потребует ввести новый пароль.
+
+картинка
+
+```bash
+PGADMIN_DEFAULT_EMAIL=guest@admin.com
+PGADMIN_DEFAULT_PASSWORD=pwd123
+```
+Картинка
+
+2. Заполняем Имя сервера (обязательно) 
+
+Картинка
+
+3. Извлекаем адрес хоста, на котором расположилась БД Postgres
+
+```bash
+sudo docker inspect go_blog_postgres | grep IPAddress
+```
+картинка
+
+4. Заполняем Адрес сервера данными хоста БД Postgres и пароль (из файла .env)
+   картинка
+5. Готово
+   картинка
+
+</details>
 
 
+<details>
+<summary>Как сделать авто-генерация документации Swagger? </summary>
 
-Устанавливаете swag
+1. Устанавливаете swag
 
 ```sh
-
 go get github.com/swaggo/swag/cmd/swag
-
 ```
-
-  
 
 3.2 Устанавливаете GOPATH
 
 ```sh
-
 export PATH=$PATH:$(go env GOPATH)/bin
-
 ```
-
-  
 
 3.3 Генерируете новый вариант документации
 
 ```bash
-
 swag init -g main.go
-
 ```
+</details>
 
-  
-
-4. ### Как подключить pgadmin к контейнеру с БД (postgres)
-
-  
-
-4.1 Поднимаем контейнеры
-
-```bash
-
-sudo docker-compose up --build
-
-```
-
-  
-
-
-  
-
-4.3 Уточняем порт, на котором работает БД (чтоб подключиться к ней)
-
-```bash
-
-sudo docker inspect go_blog_postgres | grep IPAddress
-
-```
-
-  
-
-4.3 Создаем сервер и настраиваем подключение к БД
-
-  
-  
 
 ## <a name="license"> ©️ License
 ```
