@@ -1,18 +1,18 @@
 version: '3'
 
 services:
-  # app:
-  #   container_name: go_blog_app                                 # Название контейнера
-  #   build: .                                                    # Образ контейнера берем из текущей папки
-  #   ports:                                                      # Связываем порты хоста:контейнера
-  #     - 3000:3000 
-  #   restart: on-failure
-  #   volumes:                                                    # Монтируем том с приложением
-  #     - api:/usr/src/app/
-  #   depends_on:
-  #     - go_blog-postgres
-  #   networks:                                                   # Подключаем к сети
-  #     - go_blog_network
+  app:
+    container_name: go_blog_app                                 # Название контейнера
+    build: .                                                    # Образ контейнера берем из текущей папки
+    ports:                                                      # Связываем порты хоста:контейнера
+      - 8080:8080 
+    restart: on-failure
+    volumes:                                                    # Монтируем том с приложением
+      - api:/usr/src/app/
+    depends_on:
+      - go_blog-postgres
+    networks:                                                   # Подключаем к сети
+      - go_blog_network
 
   go_blog-postgres:
     container_name: go_blog_postgres                            # Название контейнера
@@ -26,29 +26,87 @@ services:
       - '5432:5432'
     volumes:                                                    # Монтируем том с данными из БД
       - database_postgres:/var/lib/postgresql/data
-    # networks:                                                   # Подключаем к сети
-    #   - go_blog_network
+    networks:                                                   # Подключаем к сети
+      - go_blog_network
     
-  # pgadmin:
-  #   container_name: pgadmin_container                           # Название контейнера
-  #   image: dpage/pgadmin4                                       # Название:версия образа
-  #   environment:                                                # Берем из .env
-  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-  #   depends_on:
-  #     - go_blog-postgres
-  #   ports:                                                      # Связываем порты хоста:контейнера
-  #     - "5050:80"
-  #   networks:                                                   # Подключаем к сети
-  #     - go_blog_network
-  #   restart: unless-stopped
+  pgadmin:
+    container_name: pgadmin_container                           # Название контейнера
+    image: dpage/pgadmin4                                       # Название:версия образа
+    environment:                                                # Берем из .env
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:                                                      
+      - "5050:80"                                               # Связываем порты хоста:контейнера 
+    depends_on:
+      - go_blog-postgres                                        # Ставим в зависимость от БД
+    networks:                                                   
+      - go_blog_network                                         # Подключаем к сети
+    restart: unless-stopped
+
+  
+  prometheus:
+    container_name: prometheus                                  # Система мониторинга
+    image: prom/prometheus:latest
+    volumes:  
+      - ./etc/prometheus:/etc/prometheus/                       # Монтируем том с данными из БД
+    hostname: prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml            # Устанавливаем конфигурацию из файла prometheus.yml
+    ports:
+      - 9090:9090                                               # Связываем порты хоста:контейнера 
+    restart: unless-stopped
+    environment:
+      TZ: "Europe/Moscow"
+    networks:
+      - go_blog_network
+
+# Извлекает данные хоста (cpu, memory) 
+  node-exporter:
+    container_name: exporter
+    image: prom/node-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    hostname: exporter
+    command:
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --collector.filesystem.ignored-mount-points
+      - ^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)
+    ports:
+      - 9100:9100
+    restart: unless-stopped
+    environment:
+      TZ: "Europe/Moscow"
+    networks:
+      - go_blog_network
+
+  # Визуализация данных на дашборде
+  grafana:
+    image: grafana/grafana
+    user: root
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    volumes:
+      - ./etc/grafana:/var/lib/grafana
+      - ./etc/grafana/provisioning/:/etc/grafana/provisioning/
+    container_name: grafana
+    hostname: grafana
+    restart: unless-stopped
+    environment:
+      TZ: "Europe/Moscow"
+    networks:
+      - go_blog_network
 
 # Список томов
 volumes:
-  # api:
+  api:
   database_postgres:               
 
-# # Настройки сети (чтоб контейнеры могли обмениваться данными)
-# networks:
-  # go_blog_network:
-    # driver: bridge
+# Настройки сети (чтоб контейнеры могли обмениваться данными)
+networks:
+  go_blog_network:
+    driver: bridge
