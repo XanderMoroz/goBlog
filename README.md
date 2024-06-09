@@ -6,9 +6,7 @@ Go Blog - готовая основа для быстрой сборки backend
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
 ![Python](https://img.shields.io/badge/go-v1.20.1+-blue.svg)
-
 ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-orange.svg)
-
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
   
@@ -57,14 +55,13 @@ Go Blog - готовая основа для быстрой сборки backend
 
 ## <a name="database_scheme"> 💾 База данных </a>
 
-  
+База данных содержит 5 моделей:
 
-База данных содержит 6 моделей:
-**Автор публикации** (User),
-**Категория статьи** (Category),
-**Cтатья** (Article),
-**Статья в категории** (ArticleCategory),
-**Комментарий** (Comment)
+  - **Автор публикации** (User),
+  - **Категория статьи** (Category),
+  - **Cтатья** (Article),
+  - **Статья в категории** (ArticleCategory),
+  - **Комментарий** (Comment)
   
 
 <details>
