@@ -72,9 +72,6 @@ Go Blog - готовая основа для быстрой сборки backend
 
 <summary>ДЕТАЛЬНАЯ ИНФОРМАЦИЯ О МОДЕЛЯХ </summary>
 
-  
-  
-
 </details>
 
   
@@ -209,37 +206,42 @@ sudo docker inspect go_blog_postgres | grep IPAddress
   - Email or username: admin
   - Password: admin
 
-После система потребует ввести новый пароль.
+![Screen Shot](docs/extras/geafana_auth_01.jpg)
 
-картинка
+2. После система потребует придумать новый пароль (это необязательно).
+
+![Screen Shot](docs/extras/geafana_auth_02.jpg)
+
+3. Мы авторизованы в сервисе Grafana. Добавим новое подключение...
+
+![Screen Shot](docs/extras/grafana_settings_01.jpg)
+
+4. Ищем в списке Prometheus и кликаем по нему
+
+![Screen Shot](docs/extras/grafana_settings_02.jpg)
+
+5. Теперь его нужно настроить
+
+![Screen Shot](docs/extras/grafana_settings_03.jpg)
+
+7. Извлекаем адрес хоста, на котором расположился Prometheus
 
 ```bash
-PGADMIN_DEFAULT_EMAIL=guest@admin.com
-PGADMIN_DEFAULT_PASSWORD=pwd123
+sudo docker inspect prometheus | grep IPAddress
 ```
-Картинка
+![Screen Shot](docs/extras/grafana_get_host.jpg)
 
-2. Заполняем Имя сервера (обязательно) 
+8. Заполняем Адрес сервера Prometheus данными хоста 
 
-Картинка
+![Screen Shot](docs/extras/grafana_settings_04.jpg)
 
-3. Извлекаем адрес хоста, на котором расположилась БД Postgres
-
-```bash
-sudo docker inspect go_blog_postgres | grep IPAddress
-```
-картинка
-
-4. Заполняем Адрес сервера данными хоста БД Postgres и пароль (из файла .env)
-   картинка
-5. Готово
-   картинка
+9. Готово
 
 </details>
 
 
 <details>
-<summary>Как сделать авто-генерация документации Swagger? </summary>
+<summary>Как сделать авто-генерацию документации Swagger? </summary>
 
 1. Устанавливаете swag
 
@@ -262,7 +264,3 @@ swag init -g main.go
 
 
 ## <a name="license"> ©️ License
-```
-sudo ufw allow 9090/tcp
-```
-sudo docker inspect prometheus | grep IPAddress
