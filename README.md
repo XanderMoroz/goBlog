@@ -1,6 +1,6 @@
 # Go Blog 
 
-Go Blog - готовая основа для быстрой сборки backend-сервисов на основе `Go Fiber`, Документация на основе `Swagger`, в соответствии со стандартом OpenAPI.
+Go Blog - готовая основа для быстрой сборки backend-сервисов на основе `Go Fiber`, со необходимой инфраструктурой
 
   
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -27,9 +27,10 @@ Go Blog - готовая основа для быстрой сборки backend
 
 ## <a name="what-is-this"> 🌀 Описание проекта</a>
 
-Go Blog - готовая основа для быстрой сборки backend-сервисов на основе `Go Fiber`, База данных - `PostgreSQL`. ORM - `GORM`. Интерфейс API `Swagger`.
+Go Blog - готовая основа для быстрой сборки backend-сервисов на основе `Go Fiber`, Интерфейс API `Swagger`. База данных - `PostgreSQL`. ORM - `GORM`. 
+Мониторинг - `Prometheus`. Метрики хоста - `Node Exporter`. Визуализация - `Grafana`. Сборка - `Docker Compose`.
 
-Контейнеризация - `Docker`.
+![Screen Shot](docs/extras/schema.jpg)
 
 ## <a name="api_docs"> 📈 Краткая документация API</a>
 
