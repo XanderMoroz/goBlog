@@ -173,14 +173,14 @@ sudo docker-compose up --build
 1. Заходим в браузер по адресу http://127.0.0.1:5050 и вводим данные из .env
 
 ```bash
-PGADMIN_DEFAULT_EMAIL=guest@admin.com
+PGADMIN_DEFAULT_EMAIL=xander@admin.com
 PGADMIN_DEFAULT_PASSWORD=pwd123
 ```
-Картинка
+![Screen Shot](docs/extras/pgadmin_auth.jpg)
 
 2. Заполняем Имя сервера (обязательно) 
 
-Картинка
+![Screen Shot](docs/extras/pgadmin_settings_01.jpg)
 
 3. Извлекаем адрес хоста, на котором расположилась БД Postgres
 
@@ -190,9 +190,12 @@ sudo docker inspect go_blog_postgres | grep IPAddress
 картинка
 
 4. Заполняем Адрес сервера данными хоста БД Postgres и пароль (из файла .env)
-   картинка
-5. Готово
-   картинка
+
+![Screen Shot](docs/extras/pgadmin_settings_02.jpg)
+
+6. Готово
+
+![Screen Shot](docs/extras/pgadmin_ready.jpg)
 
 </details>
 
