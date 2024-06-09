@@ -187,7 +187,7 @@ PGADMIN_DEFAULT_PASSWORD=pwd123
 ```bash
 sudo docker inspect go_blog_postgres | grep IPAddress
 ```
-картинка
+![Screen Shot](docs/extras/pgadmin_get_host.jpg)
 
 4. Заполняем Адрес сервера данными хоста БД Postgres и пароль (из файла .env)
 
