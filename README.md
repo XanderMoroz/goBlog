@@ -1,5 +1,7 @@
 # Go Blog 
 
+![Screen Shot](docs/extras/illustration.jpg)
+
 Go Blog - готовая основа для быстрой сборки backend-сервисов на основе `Go Fiber`, со необходимой инфраструктурой
 
   
